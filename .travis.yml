@@ -1,10 +1,14 @@
 language: node_js
+cache: yarn
+
 notifications:
   email: false
+
 node_js:
   - "node"
   - "10"
   - "8"
+  -
 script:
   - yarn build
   - yarn test
