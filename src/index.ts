@@ -23,9 +23,6 @@ const defaultErrorHandler: ErrorHandler = (req, res, error) => {
 
   res.write(error.message);
   res.end();
-
-  // tslint:disable-next-line:no-console
-  console.error(error);
 };
 
 export class Routar extends Router {
