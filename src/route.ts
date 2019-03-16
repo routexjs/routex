@@ -1,27 +1,32 @@
 import * as pathToRegexp from "path-to-regexp";
 import Router, {
   Handler,
-  Method,
+  Methods,
   Request,
   Response,
   RouteHandler
 } from "./router";
 
+export interface IRouteOptions {
+  exact?: boolean;
+}
+
 export class Route {
-  public method: Method | Method[] | undefined;
+  public method: Methods | Methods[] | undefined;
   public path: string | undefined;
   public regex: RegExp | undefined;
   public handler: RouteHandler;
 
   constructor(
-    method: Method | Method[] | undefined,
+    method: Methods | Methods[] | undefined,
     path: string | undefined,
-    handler: RouteHandler
+    handler: RouteHandler,
+    { exact = false }: IRouteOptions = {}
   ) {
     this.method = method;
     this.path = path;
     if (path) {
-      this.regex = pathToRegexp(path, undefined, { end: false });
+      this.regex = pathToRegexp(path, undefined, { end: exact });
     }
 
     this.handler = handler;

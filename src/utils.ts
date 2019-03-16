@@ -28,3 +28,17 @@ export function useCtx(handler: CtxHandler): Handler {
     return result;
   };
 }
+
+export function toLowerCases(
+  value: string | string[] | undefined
+): string | string[] | undefined {
+  if (!value) {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(toLowerCases) as string[];
+  }
+
+  return value.toLowerCase();
+}

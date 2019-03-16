@@ -1,4 +1,5 @@
 import * as http from "http";
+import { AddressInfo } from "net";
 
 import { ErrorWithStatusCode } from "./error";
 import Router, {
@@ -26,11 +27,13 @@ const defaultErrorHandler: ErrorHandler = (req, res, error) => {
 export class Routar extends Router {
   public errorHandler = defaultErrorHandler;
 
-  public rootHandler = async (
+  public handler = async (
     req: http.IncomingMessage,
     res: http.ServerResponse
   ) => {
     const handle: Handler = async (request, response) => {
+      request.data = {};
+
       response.json = (json, { pretty = false }: IJsonOptions = {}) => {
         const space = pretty ? (pretty === true ? "  " : pretty) : undefined;
 
@@ -47,7 +50,7 @@ export class Routar extends Router {
       response.end();
     };
 
-    // Instead of casting like this, use a proper class
+    // TODO: Instead of casting like this, use a proper class
     await handle(req as Request, res as Response);
   };
 
@@ -71,12 +74,27 @@ export class Routar extends Router {
       throw new Error(`Invalid hostname (${hostname} is not a string)`);
     }
 
-    const server = http.createServer(this.rootHandler);
+    const server = http.createServer(this.handler);
 
     await new Promise(resolve => {
       server.listen(port as number, hostname, resolve);
     });
 
-    return server;
+    const close = () =>
+      new Promise((resolve, reject) => {
+        server.close(error => {
+          if (error) {
+            /* istanbul ignore next */
+            reject(error);
+          }
+          resolve();
+        });
+      });
+
+    return {
+      close,
+      port: (server.address() as AddressInfo).port as number,
+      server
+    };
   }
 }

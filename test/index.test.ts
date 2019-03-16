@@ -1,42 +1,86 @@
-import { AddressInfo } from "net";
 import * as request from "supertest";
-import { ErrorWithStatusCode, Routar, Router, useCtx } from "../src";
+import { Routar, useCtx } from "../src";
+import { Methods } from "../src/router";
 
-it("Handles GET index request", () => {
+it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
   const app = new Routar();
 
-  app.get("/", (req, res) => {
-    res.json({ name: "john" });
-  });
+  app
+    .get("/", (req, res) => {
+      res.json({ name: "bonnie" });
+    })
+    .post("/", (req, res) => {
+      res.json({ name: "john" });
+    })
+    .delete("/", (req, res) => {
+      res.json({ name: "johnny" });
+    })
+    .patch("/", (req, res) => {
+      res.json({ name: "hayley" });
+    })
+    .put("/", (req, res) => {
+      res.json({ name: "charles" });
+    })
+    .route(Methods.GET, "/sub", (req, res) => {
+      res.json({ name: "joey" });
+    })
+    .route([Methods.POST], "/sub", (req, res) => {
+      res.json({ name: "matthew" });
+    })
+    .any("/any", (req, res) => {
+      res.json({ name: "tim" });
+    });
 
-  return request(app.rootHandler)
-    .get("/")
-    .expect("Content-Type", /json/)
-    .expect("Content-Length", "15")
-    .expect(200);
-});
+  const handler = request(app.handler);
 
-it("Handles POST index request", () => {
-  const app = new Routar();
-
-  app.get("/", (req, res) => {
-    res.json({ name: "bonnie" });
-  });
-  app.post("/", (req, res) => {
-    res.json({ name: "john" });
-  });
-
-  return request(app.rootHandler)
-    .post("/")
-    .expect("Content-Type", /json/)
-    .expect("Content-Length", "15")
-    .expect(200);
+  return Promise.all([
+    handler
+      .get("/")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "17")
+      .expect(200),
+    handler
+      .post("/")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "15")
+      .expect(200),
+    handler
+      .delete("/")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "17")
+      .expect(200),
+    handler
+      .patch("/")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "17")
+      .expect(200),
+    handler
+      .put("/")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "18")
+      .expect(200),
+    handler
+      .get("/sub")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "15")
+      .expect(200),
+    handler
+      .post("/sub")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "18")
+      .expect(200),
+    handler
+      .get("/any")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "14")
+      .expect(200)
+  ]);
 });
 
 it("Handles 404", () => {
   const app = new Routar();
 
-  return request(app.rootHandler)
+  return request(app.handler)
     .post("/")
     .expect(404);
 });
@@ -55,7 +99,7 @@ it("Handles array handlers", () => {
     }
   ]);
 
-  return request(app.rootHandler)
+  return request(app.handler)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
@@ -65,20 +109,19 @@ it("Handles array handlers", () => {
 it("Handles multiple routes", () => {
   const app = new Routar();
 
-  app.get("/women", (req, res) => {
-    res.json({ name: "bonnie" });
-  });
+  app
+    .get("/women", (req, res) => {
+      res.json({ name: "bonnie" });
+    })
+    .get("/man", (req, res) => {
+      res.json({ name: "john" });
+    })
+    .get("/", (req, res) => {
+      res.statusCode = 404;
+      res.json({ name: null });
+    });
 
-  app.get("/man", (req, res) => {
-    res.json({ name: "john" });
-  });
-
-  app.get("/", (req, res) => {
-    res.statusCode = 404;
-    res.json({ name: null });
-  });
-
-  const appRequest = request(app.rootHandler);
+  const appRequest = request(app.handler);
 
   return Promise.all([
     appRequest
@@ -102,28 +145,24 @@ it("Handles multiple routes", () => {
 it("Handles sub-routers", () => {
   const app = new Routar();
 
-  const childRouter = new Router();
-
-  childRouter.get("/", (req, res) => {
+  app.child("/child").get("/", (req, res) => {
     res.json({ name: "joey" });
   });
-
-  app.use("/child", childRouter);
 
   app.get("/", (req, res) => {
     res.statusCode = 404;
     res.json({ name: null });
   });
 
-  const appRequest = request(app.rootHandler);
+  const handler = request(app.handler);
 
   return Promise.all([
-    appRequest
+    handler
       .get("/child")
       .expect("Content-Type", /json/)
       .expect("Content-Length", "15")
       .expect(200),
-    appRequest
+    handler
       .get("/")
       .expect("Content-Type", /json/)
       .expect("Content-Length", "13")
@@ -143,7 +182,7 @@ it("Handles useCtx", () => {
     })
   );
 
-  return request(app.rootHandler)
+  return request(app.handler)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
@@ -157,7 +196,7 @@ it("Handles JSON pretty print", () => {
     res.json({ name: "john" }, { pretty: true });
   });
 
-  return request(app.rootHandler)
+  return request(app.handler)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "20")
@@ -171,7 +210,7 @@ it("Handles custom JSON pretty print", () => {
     res.json({ name: "john" }, { pretty: "\t" });
   });
 
-  return request(app.rootHandler)
+  return request(app.handler)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "19")

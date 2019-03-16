@@ -1,4 +1,3 @@
-import { AddressInfo } from "net";
 import * as request from "supertest";
 import { Routar } from "../src";
 
@@ -7,15 +6,15 @@ it("Handles listen on random port", async () => {
 
   app.get("/", (req, res) => res.json({ name: "john" }));
 
-  const server = await app.listen();
+  const { close, port } = await app.listen();
 
-  await request(`http://localhost:${(server.address() as AddressInfo).port}`)
+  await request(`http://localhost:${port}`)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
     .expect(200);
 
-  await new Promise(resolve => server.close(resolve));
+  await close();
 });
 
 it("Handles listen on assigned port", async () => {
@@ -23,15 +22,15 @@ it("Handles listen on assigned port", async () => {
 
   app.get("/", (req, res) => res.json({ name: "john" }));
 
-  const server = await app.listen(9999);
+  const { close, port } = await app.listen(9999);
 
-  await request(`http://localhost:${(server.address() as AddressInfo).port}`)
+  await request(`http://localhost:${port}`)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
     .expect(200);
 
-  await new Promise(resolve => server.close(resolve));
+  await close();
 });
 
 it("Handles listen on assigned string port", async () => {
@@ -39,15 +38,15 @@ it("Handles listen on assigned string port", async () => {
 
   app.get("/", (req, res) => res.json({ name: "john" }));
 
-  const server = await app.listen("9998");
+  const { close, port } = await app.listen("9998");
 
-  await request(`http://localhost:${(server.address() as AddressInfo).port}`)
+  await request(`http://localhost:${port}`)
     .get("/")
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
     .expect(200);
 
-  await new Promise(resolve => server.close(resolve));
+  await close();
 });
 
 it("Catches listen on invalid port", async () => {
