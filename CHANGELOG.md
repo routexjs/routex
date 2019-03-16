@@ -1,3 +1,7 @@
+## 0.0.3 - unreleased
+
+- Add `useExpressNext` for Express/Connect/callback style middlewares
+
 ## 0.0.2 - 2019-03-16
 
 - Add more documentation to README

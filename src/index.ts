@@ -2,6 +2,7 @@ import * as http from "http";
 import { AddressInfo } from "net";
 
 import { ErrorWithStatusCode } from "./error";
+import { useExpressNext } from "./express";
 import Router, {
   ErrorHandler,
   Handler,
@@ -11,7 +12,7 @@ import Router, {
 } from "./router";
 import { isString, useCtx } from "./utils";
 
-export { Router, useCtx, ErrorWithStatusCode };
+export { Router, useCtx, ErrorWithStatusCode, useExpressNext };
 
 export interface IListenOptions {
   hostname?: string;
@@ -22,6 +23,9 @@ const defaultErrorHandler: ErrorHandler = (req, res, error) => {
 
   res.write(error.message);
   res.end();
+
+  // tslint:disable-next-line:no-console
+  console.error(error);
 };
 
 export class Routar extends Router {

@@ -128,6 +128,23 @@ app
   });
 ```
 
+#### Express Middlewares
+
+Routar has built-in support for Express/Connect/callback style middlewares.
+
+```js
+const { useExpressNext } = require("routar");
+const bodyParser = require("body-parser");
+
+app.middleware(useExpressNext(bodyParser.json()));
+
+app.post("/", (req, res) => {
+  res.json({ data: req.body });
+});
+```
+
+This enables the `(req, res, next) => ...` syntax.
+
 ### Listening
 
 Using `app.listen` is a simple way to start your Routar server:
