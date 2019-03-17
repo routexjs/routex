@@ -27,15 +27,18 @@ it("Handles express middleware", () => {
 
   app
     .middleware(
-      useExpress((req, res, next) => {
+      useExpress((req: any, res: any, next: any) => {
         res.write("A");
 
         next();
       })
     )
-    .get("/", ctx => {
-      ctx.res.write("B");
-    });
+    .get(
+      "/",
+      useExpress((req: any, res: any) => {
+        res.write("B");
+      })
+    );
 
   return request(app.handler)
     .get("/")

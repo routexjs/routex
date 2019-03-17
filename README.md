@@ -1,4 +1,4 @@
-# Routar ![npm](https://img.shields.io/npm/v/routar.svg) ![Travis (.com)](https://img.shields.io/travis/com/Cretezy/routar.svg) ![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routar.svg)
+# Routar [![npm](https://img.shields.io/npm/v/routar.svg)](https://www.npmjs.com/package/routar) [![Travis CI](https://img.shields.io/travis/com/Cretezy/routar.svg)](https://travis-ci.com/Cretezy/routar) [![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routar.svg)](https://codecov.io/gh/Cretezy/routar)
 
 Modern Node router.
 

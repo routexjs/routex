@@ -1,8 +1,8 @@
 import { Handler } from "./router";
 
-type ExpressMiddleware = (req: any, res: any, next?: () => void) => any;
-
-export function useExpress(handler: ExpressMiddleware): Handler {
+// TODO: Use proper Connect typings
+// tslint:disable-next-line:ban-types
+export function useExpress(handler: Function): Handler {
   return async ctx => {
     if (handler.length >= 3) {
       return new Promise<void>(resolve => {
