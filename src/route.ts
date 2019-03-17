@@ -1,11 +1,6 @@
 import * as pathToRegexp from "path-to-regexp";
-import Router, {
-  Handler,
-  Methods,
-  Request,
-  Response,
-  RouteHandler
-} from "./router";
+
+import { Handler, ICtx, Methods, RouteHandler, Router } from "./router";
 
 export interface IRouteOptions {
   exact?: boolean;
@@ -32,28 +27,27 @@ export class Route {
     this.handler = handler;
   }
 
-  public handle: Handler = async (req, res): Promise<any> => {
-    return this.handleHandler(this.handler, req, res);
+  public handle: Handler = async (ctx): Promise<any> => {
+    return this.handleHandler(this.handler, ctx);
   };
 
   private handleHandler = async (
     handler: RouteHandler,
-    req: Request,
-    res: Response
+    ctx: ICtx
   ): Promise<any> => {
     if (handler instanceof Router) {
-      return handler.handle(req, res);
+      return handler.handle(ctx);
     } else if (Array.isArray(handler)) {
       for (let index = 0; index < handler.length; index++) {
         const childHandler = handler[index];
-        const returned: any = await this.handleHandler(childHandler, req, res);
+        const returned: any = await this.handleHandler(childHandler, ctx);
 
         if (index === handler.length - 1) {
           return returned;
         }
       }
     } else {
-      return handler(req, res);
+      return handler(ctx);
     }
   };
 }

@@ -1,10 +1,15 @@
-const { Routar, Router, useCtx, ErrorWithStatusCode } = require("./dist/lib");
+const {
+  ErrorWithStatusCode,
+  JsonBody,
+  Routar,
+  TextBody,
+  useExpress
+} = require("../dist/lib");
 
 class ValidationError extends ErrorWithStatusCode {
   constructor(message) {
     super(400, message);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
+    Object.setPrototypeOf(this, new.target.prototype);
   }
 }
 
@@ -13,48 +18,49 @@ const port = process.env.PORT || 3000;
 const app = new Routar();
 
 app
-  .get("/", async (req, res) => {
-    res.write("Index");
+  .get("/", async ctx => {
+    ctx.body = new TextBody("Index");
   })
   .get("/error", [
     () => {
       throw new ValidationError("Some error");
     },
-    (req, res) => res.json("Will never be returned")
+    ctx => {
+      ctx.body = new TextBody("Will never be returned");
+    }
   ])
   .get(
-    "/ctx",
-    useCtx(ctx => {
-      ctx.body = {
-        rootCtx: "Works!"
-      };
+    "/express",
+    useExpress((req, res) => {
+      res.write("Express!");
     })
   )
-  .get("/delay", async (req, res) => {
+  .get("/delay", async ctx => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    res.write("Delayed");
+    ctx.body = new TextBody("Delayed");
   })
   .get(
     "/catch",
-    (req, res) => {
-      res.write("Catch");
+    ctx => {
+      ctx.body = new TextBody("Catch");
     },
     { exact: false }
   );
 
 app
   .child("/child")
-  .middleware((req, res) => {
-    res.setHeader("X-Server", "Routar");
-    req.data.name = "john";
+  .middleware(ctx => {
+    ctx.res.setHeader("X-Server", "Routar");
+    ctx.data.name = "john";
   })
-  .get("/", (req, res) => {
-    res.write("Child Index");
+  .get("/", ctx => {
+    ctx.body = new TextBody("Child index");
   })
-  .get("/json", (req, res) => {
-    res.json({ child: true, name: req.data.name });
+  .get("/json", ctx => {
+    ctx.body = new JsonBody({ child: true, name: ctx.data.name });
   });
 
 app.listen(port).then(({ port: listeningPort }) => {
+  // tslint:disable-next-line:no-console
   console.log(`Listening on ${listeningPort}`);
 });

@@ -1,4 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
+
+import { IBody } from "./body";
 import { ErrorWithStatusCode } from "./error";
 import { IRouteOptions, Route } from "./route";
 import { toLowerCases } from "./utils";
@@ -11,37 +13,27 @@ export enum Methods {
   PATCH = "patch"
 }
 
-export type Handler = (
-  req: Request,
-  res: Response
-) => Promise<any> | any | undefined | null;
-
-export type Middleware = (
-  req: Request,
-  res: Response
-) => (() => void) | Promise<void> | void;
-
-export interface IJsonOptions {
-  pretty?: boolean | string;
+export interface ICtx {
+  req: IncomingMessage;
+  res: ServerResponse;
+  matches?: RegExpExecArray[];
+  path: string;
+  data: any;
+  body?: IBody;
+  statusCode?: number;
 }
 
-export type Request = IncomingMessage & {
-  matches: RegExpExecArray[];
-  _path: string;
-  data: any;
-};
+export type Handler = (ctx: ICtx) => Promise<void> | void;
 
-export type Response = ServerResponse & {
-  json: (json: any, options?: IJsonOptions) => any;
-};
+export type Middleware = (ctx: ICtx) => (() => void) | Promise<void> | void;
+
+// export interface IJsonOptions {
+//   pretty?: boolean | string;
+// }
 
 export type ErrorHandler =
   | Handler
-  | ((
-      req: Request,
-      res: Response,
-      error: Error | ErrorWithStatusCode
-    ) => Promise<any> | any);
+  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => Promise<any> | any);
 
 type RouteHandler_ = Router | Handler;
 export type RouteHandler = RouteHandler_ | RouteHandler_[];
@@ -52,7 +44,7 @@ type RouteAdder = (
   options?: IRouteOptions
 ) => Router;
 
-export default class Router {
+export class Router {
   public errorHandler: ErrorHandler | undefined;
 
   // Methods, added dynamically
@@ -106,33 +98,30 @@ export default class Router {
     return this;
   };
 
-  public handle: Handler = async (req, res) => {
+  public handle: Handler = async ctx => {
     try {
       const middlewaresNext: Array<() => void | Promise<void>> = [];
 
       for (const middleware of this.middlewares) {
-        const next = await middleware(req, res);
+        const next = await middleware(ctx);
 
         if (next) {
           middlewaresNext.push(next);
         }
       }
 
-      if (!req.method || !req.url) {
+      if (!ctx.req.method || !ctx.req.url) {
         /* istanbul ignore next */
         // Invalid HTTP request, should never happen
         throw new ErrorWithStatusCode(400, "Invalid request");
       }
 
-      if (req._path == null) {
-        req._path = req.url;
-      }
-      if (!req._path) {
-        req._path = "/";
+      if (!ctx.path) {
+        ctx.path = "/";
       }
 
-      const method = req.method.toLowerCase() as Methods;
-      const url: string = req._path;
+      const method = ctx.req.method.toLowerCase() as Methods;
+      const url: string = ctx.path;
 
       let route: Route | undefined;
       let match: RegExpExecArray | null;
@@ -157,14 +146,15 @@ export default class Router {
         }
 
         if (match) {
-          req._path = req._path.replace(match[0], "");
+          ctx.path = ctx.path.replace(match[0], "");
         }
+
         route = testRoute;
         return true;
       });
 
       if (route) {
-        await route.handle(req, res);
+        await route.handle(ctx);
 
         for (const middelwareNext of middlewaresNext) {
           await middelwareNext();
@@ -176,7 +166,7 @@ export default class Router {
       throw new ErrorWithStatusCode(404, "Not Found");
     } catch (error) {
       if (this.errorHandler) {
-        return this.errorHandler(req, res, error);
+        return this.errorHandler(ctx, error);
       }
 
       throw error;

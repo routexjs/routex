@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { ErrorWithStatusCode, Routar, Router, useCtx } from "../src";
+import { ErrorWithStatusCode, Routar, Router } from "../src";
 
 it("Handles 404", () => {
   const app = new Routar();

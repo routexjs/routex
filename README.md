@@ -23,13 +23,13 @@ npm add routar
 Setup your app:
 
 ```js
-const { Routar } = require("routar");
+const { Routar, TextBody } = require("routar");
 
 const port = process.env.PORT || 3000;
 const app = new Routar();
 
-app.get("/", (req, res) => {
-  res.write("Hello world!");
+app.get("/", ctx => {
+  ctx.body = new TextBody("Hello world!");
 });
 
 app.listen(port).then(() => console.log(`Listening on ${port}`));
@@ -44,29 +44,35 @@ Routing in Routar is slightly different from other routes, but is targeted towar
 To start, you can use the `.get`, `.post`, `.delete`, `.patch`, `.put`, and `.any` (all aliasing to `.route`) to attach single routes to a router. These methods are chainable, and can be in any order (uses exact match):
 
 ```js
+const { TextBody, JsonBody } = require("routar");
+
 app
-  .get("/", (req, res) => {
-    res.write("GET /");
+  .get("/", ctx => {
+    ctx.body = new TextBody("GET /");
   })
-  .post("/submit", (req, res) => {
-    res.write("POST /submit");
+  .post("/submit", ctx => {
+    ctx.body = new TextBody("POST /submit");
+    ctx.statusCode = 400;
+  })
+  .get("/json", ctx => {
+    ctx.body = new JsonBody({ name: "john" });
   })
   .get(
     "/catch",
-    (req, res) => {
-      res.write("GET /catch/*");
+    ctx => {
+      ctx.body = new TextBody("GET /catch/*");
     },
     { exact: false }
   );
 
 // Long form
-app.route("POST", "/", (req, res) => {
-  res.write("GET /");
+app.route("POST", "/", ctx => {
+  ctx.body = new TextBody("GET /");
 });
 
-app.any("/", (req, res) => {
+app.any("/", ctx => {
   // Will catch all other methods on /
-  res.write("DELETE/PUTCH/PUT /");
+  ctx.body = new TextBody("DELETE/PUTCH/PUT /");
 });
 ```
 
@@ -75,8 +81,8 @@ app.any("/", (req, res) => {
 Child routers are useful to functionally split your application in smaller units:
 
 ```js
-app.child("/child").get("/", (req, res) => {
-  res.write("GET /child");
+app.child("/child").get("/", ctx => {
+  ctx.body = new TextBody("GET /child");
 });
 
 // Or
@@ -85,8 +91,8 @@ const { Router } = require("routar");
 
 const parentsRouter = new Router();
 
-parentsRouter.get("/", (req, res) => {
-  res.write("GET /parents");
+parentsRouter.get("/", ctx => {
+  ctx.body = new TextBody("GET /parents");
 });
 
 app.child("/parents", parentsRouter);
@@ -96,10 +102,10 @@ app.child("/parents", parentsRouter);
 
 A handler can be:
 
-- A function (`(res, res) => ...`)
-- A Promise (`async (res, res) => ...`)
+- A function (`(ctx) => ...`)
+- A Promise (`async (ctx) => ...`)
 - A router (`new Router()`)
-- A list of handlers (`[middleware, (req, res) => ..., router]`)
+- A list of handlers (`[middleware, (ctx) => ..., router]`)
 
 ### Middlewares
 
@@ -107,24 +113,24 @@ Middlewares are triggered at the start and end of handing a router. A middleware
 
 ```js
 app
-  .middleware((req, res) => {
+  .middleware(ctx => {
     // Attaches data to the request in the root router
-    req.data.name = "john";
+    ctx.data.name = "john";
   })
-  .get("/", (req, res) => {
-    res.json({ name: req.data.name });
+  .get("/", ctx => {
+    ctx.body = new JsonBody({ name: ctx.data.name });
   });
 
 app
   .child("/child")
-  .middleware((req, res) => {
+  .middleware(ctx => {
     return () => {
-      // Will append ' ... Smith!' to all requets in this router
-      res.write(" ... Smith!");
+      // Will append ' ... smith!' to all requests in this router
+      ctx.res.write(" ... smith!");
     };
   })
-  .get("/", (req, res) => {
-    res.write(`My name is ${req.data.name}`);
+  .get("/", ctx => {
+    ctx.res.write(`My name is ${ctx.data.name}`);
   });
 ```
 
@@ -133,17 +139,17 @@ app
 Routar has built-in support for Express/Connect/callback style middlewares.
 
 ```js
-const { useExpressNext } = require("routar");
+const { useExpress, JsonBody } = require("routar");
 const bodyParser = require("body-parser");
 
-app.middleware(useExpressNext(bodyParser.json()));
+app.middleware(useExpress(bodyParser.json()));
 
-app.post("/", (req, res) => {
-  res.json({ data: req.body });
+app.post("/", ctx => {
+  ctx.body = new JsonBody({ data: ctx.req.body });
 });
 ```
 
-This enables the `(req, res, next) => ...` syntax.
+This enables the `(req, res) => ...` or `(req, res, next) => ...` syntax.
 
 ### Listening
 

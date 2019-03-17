@@ -1,19 +1,19 @@
 import * as request from "supertest";
-import { Routar, useExpressNext } from "../src";
+import { Routar, useExpress } from "../src";
 
 it("Handles middleware", () => {
   const app = new Routar();
 
   app
-    .middleware((req, res) => {
-      res.write("A");
+    .middleware(ctx => {
+      ctx.res.write("A");
 
       return () => {
-        res.write("C");
+        ctx.res.write("C");
       };
     })
-    .get("/", (req, res) => {
-      res.write("B");
+    .get("/", ctx => {
+      ctx.res.write("B");
     });
 
   return request(app.handler)
@@ -27,14 +27,14 @@ it("Handles express middleware", () => {
 
   app
     .middleware(
-      useExpressNext((req, res, next) => {
+      useExpress((req, res, next) => {
         res.write("A");
 
         next();
       })
     )
-    .get("/", (req, res) => {
-      res.write("B");
+    .get("/", ctx => {
+      ctx.res.write("B");
     });
 
   return request(app.handler)

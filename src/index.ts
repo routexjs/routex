@@ -1,28 +1,24 @@
 import * as http from "http";
 import { AddressInfo } from "net";
 
+import { JsonBody } from "./body/json";
+import { TextBody } from "./body/text";
 import { ErrorWithStatusCode } from "./error";
-import { useExpressNext } from "./express";
-import Router, {
-  ErrorHandler,
-  Handler,
-  IJsonOptions,
-  Request,
-  Response
-} from "./router";
-import { isString, useCtx } from "./utils";
+import { useExpress } from "./express";
+import { ErrorHandler, ICtx, Methods, Router } from "./router";
+import { isString } from "./utils";
 
-export { Router, useCtx, ErrorWithStatusCode, useExpressNext };
+export { Router, ErrorWithStatusCode, useExpress, JsonBody, TextBody, Methods };
 
 export interface IListenOptions {
   hostname?: string;
 }
 
-const defaultErrorHandler: ErrorHandler = (req, res, error) => {
-  res.writeHead(error instanceof ErrorWithStatusCode ? error.statusCode : 500);
+const defaultErrorHandler: ErrorHandler = (ctx, error) => {
+  ctx.statusCode =
+    error instanceof ErrorWithStatusCode ? error.statusCode : 500;
 
-  res.write(error.message);
-  res.end();
+  ctx.body = new TextBody(error.message);
 };
 
 export class Routar extends Router {
@@ -32,27 +28,30 @@ export class Routar extends Router {
     req: http.IncomingMessage,
     res: http.ServerResponse
   ) => {
-    const handle: Handler = async (request, response) => {
-      request.data = {};
-
-      response.json = (json, { pretty = false }: IJsonOptions = {}) => {
-        const space = pretty ? (pretty === true ? "  " : pretty) : undefined;
-
-        const body = JSON.stringify(json, null, space);
-
-        res.setHeader("Content-Type", "application/json");
-        res.setHeader("Content-Length", body.length);
-
-        res.write(body);
-      };
-
-      await this.handle(request, response);
-
-      response.end();
+    /* istanbul ignore next */
+    const ctx: ICtx = {
+      data: {},
+      path: req.url || "",
+      req,
+      res
     };
 
-    // TODO: Instead of casting like this, use a proper class
-    await handle(req as Request, res as Response);
+    await this.handle(ctx);
+
+    if (ctx.body) {
+      ctx.res.setHeader("Content-Length", ctx.body.contentLength);
+      ctx.res.setHeader("Content-Type", ctx.body.contentType);
+    }
+
+    if (ctx.statusCode) {
+      ctx.res.writeHead(ctx.statusCode);
+    }
+
+    if (ctx.body) {
+      ctx.body.write(ctx.res);
+    }
+
+    ctx.res.end();
   };
 
   public async listen(

@@ -1,34 +1,33 @@
 import * as request from "supertest";
-import { Routar, useCtx } from "../src";
-import { Methods } from "../src/router";
+import { JsonBody, Methods, Routar } from "../src";
 
 it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
   const app = new Routar();
 
   app
-    .get("/", (req, res) => {
-      res.json({ name: "bonnie" });
+    .get("/", ctx => {
+      ctx.body = new JsonBody({ name: "bonnie" });
     })
-    .post("/", (req, res) => {
-      res.json({ name: "john" });
+    .post("/", ctx => {
+      ctx.body = new JsonBody({ name: "john" });
     })
-    .delete("/", (req, res) => {
-      res.json({ name: "johnny" });
+    .delete("/", ctx => {
+      ctx.body = new JsonBody({ name: "johnny" });
     })
-    .patch("/", (req, res) => {
-      res.json({ name: "hayley" });
+    .patch("/", ctx => {
+      ctx.body = new JsonBody({ name: "hayley" });
     })
-    .put("/", (req, res) => {
-      res.json({ name: "charles" });
+    .put("/", ctx => {
+      ctx.body = new JsonBody({ name: "charles" });
     })
-    .route(Methods.GET, "/sub", (req, res) => {
-      res.json({ name: "joey" });
+    .route(Methods.GET, "/sub", ctx => {
+      ctx.body = new JsonBody({ name: "joey" });
     })
-    .route([Methods.POST], "/sub", (req, res) => {
-      res.json({ name: "matthew" });
+    .route([Methods.POST], "/sub", ctx => {
+      ctx.body = new JsonBody({ name: "matthew" });
     })
-    .any("/any", (req, res) => {
-      res.json({ name: "tim" });
+    .any("/any", ctx => {
+      ctx.body = new JsonBody({ name: "tim" });
     });
 
   const handler = request(app.handler);
@@ -89,13 +88,13 @@ it("Handles array handlers", () => {
   const app = new Routar();
 
   app.get("/", [
-    req => {
+    ctx => {
       // @ts-ignore
-      req.name = "john";
+      ctx.data.name = "john";
     },
-    (req, res) => {
+    ctx => {
       // @ts-ignore
-      res.json({ name: req.name });
+      ctx.body = new JsonBody({ name: ctx.data.name });
     }
   ]);
 
@@ -110,15 +109,15 @@ it("Handles multiple routes", () => {
   const app = new Routar();
 
   app
-    .get("/women", (req, res) => {
-      res.json({ name: "bonnie" });
+    .get("/women", ctx => {
+      ctx.body = new JsonBody({ name: "bonnie" });
     })
-    .get("/man", (req, res) => {
-      res.json({ name: "john" });
+    .get("/man", ctx => {
+      ctx.body = new JsonBody({ name: "john" });
     })
-    .get("/", (req, res) => {
-      res.statusCode = 404;
-      res.json({ name: null });
+    .get("/", ctx => {
+      ctx.statusCode = 404;
+      ctx.body = new JsonBody({ name: null });
     });
 
   const appRequest = request(app.handler);
@@ -145,13 +144,13 @@ it("Handles multiple routes", () => {
 it("Handles sub-routers", () => {
   const app = new Routar();
 
-  app.child("/child").get("/", (req, res) => {
-    res.json({ name: "joey" });
+  app.child("/child").get("/", ctx => {
+    ctx.body = new JsonBody({ name: "joey" });
   });
 
-  app.get("/", (req, res) => {
-    res.statusCode = 404;
-    res.json({ name: null });
+  app.get("/", ctx => {
+    ctx.statusCode = 404;
+    ctx.body = new JsonBody({ name: null });
   });
 
   const handler = request(app.handler);
@@ -168,51 +167,4 @@ it("Handles sub-routers", () => {
       .expect("Content-Length", "13")
       .expect(404)
   ]);
-});
-
-it("Handles useCtx", () => {
-  const app = new Routar();
-
-  app.get(
-    "/",
-    useCtx(ctx => {
-      ctx.body = {
-        name: "john"
-      };
-    })
-  );
-
-  return request(app.handler)
-    .get("/")
-    .expect("Content-Type", /json/)
-    .expect("Content-Length", "15")
-    .expect(200);
-});
-
-it("Handles JSON pretty print", () => {
-  const app = new Routar();
-
-  app.get("/", (req, res) => {
-    res.json({ name: "john" }, { pretty: true });
-  });
-
-  return request(app.handler)
-    .get("/")
-    .expect("Content-Type", /json/)
-    .expect("Content-Length", "20")
-    .expect(200);
-});
-
-it("Handles custom JSON pretty print", () => {
-  const app = new Routar();
-
-  app.get("/", (req, res) => {
-    res.json({ name: "john" }, { pretty: "\t" });
-  });
-
-  return request(app.handler)
-    .get("/")
-    .expect("Content-Type", /json/)
-    .expect("Content-Length", "19")
-    .expect(200);
 });
