@@ -1,7 +1,7 @@
 const {
   ErrorWithStatusCode,
   JsonBody,
-  Routar,
+  Routex,
   TextBody,
   useExpress
 } = require("../dist/lib");
@@ -15,7 +15,7 @@ class ValidationError extends ErrorWithStatusCode {
 
 const port = process.env.PORT || 3000;
 
-const app = new Routar();
+const app = new Routex();
 
 app
   .get("/", async ctx => {
@@ -50,7 +50,7 @@ app
 app
   .child("/child")
   .middleware(ctx => {
-    ctx.res.setHeader("X-Server", "Routar");
+    ctx.res.setHeader("X-Server", "Routex");
     ctx.data.name = "john";
   })
   .get("/", ctx => {

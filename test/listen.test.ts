@@ -1,8 +1,8 @@
 import * as request from "supertest";
-import { JsonBody, Routar } from "../src";
+import { JsonBody, Routex } from "../src";
 
 it("Handles listen on random port", async () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" });
@@ -20,7 +20,7 @@ it("Handles listen on random port", async () => {
 });
 
 it("Handles listen on assigned port", async () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" });
@@ -38,7 +38,7 @@ it("Handles listen on assigned port", async () => {
 });
 
 it("Handles listen on assigned string port", async () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" });
@@ -56,7 +56,7 @@ it("Handles listen on assigned string port", async () => {
 });
 
 it("Catches listen on invalid port", async () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" });
@@ -66,7 +66,7 @@ it("Catches listen on invalid port", async () => {
 });
 
 it("Catches listen on invalid hostname", async () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" });

@@ -1,4 +1,4 @@
-# Routar [![npm](https://img.shields.io/npm/v/routar.svg)](https://www.npmjs.com/package/routar) [![Travis CI](https://img.shields.io/travis/com/Cretezy/routar.svg)](https://travis-ci.com/Cretezy/routar) [![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routar.svg)](https://codecov.io/gh/Cretezy/routar)
+# Routex [![npm](https://img.shields.io/npm/v/routex.svg)](https://www.npmjs.com/package/routex) [![Travis CI](https://img.shields.io/travis/com/Cretezy/routex.svg)](https://travis-ci.com/Cretezy/routex) [![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routex.svg)](https://codecov.io/gh/Cretezy/routex)
 
 Modern Node router.
 
@@ -15,18 +15,18 @@ Features:
 Install:
 
 ```bash
-yarn add routar
+yarn add routex
 # or
-npm add routar
+npm add routax
 ```
 
 Setup your app:
 
 ```js
-const { Routar, TextBody } = require("routar");
+const { Routex, TextBody } = require("routex");
 
 const port = process.env.PORT || 3000;
-const app = new Routar();
+const app = new Routex();
 
 app.get("/", ctx => {
   ctx.body = new TextBody("Hello world!");
@@ -39,12 +39,12 @@ app.listen(port).then(() => console.log(`Listening on ${port}`));
 
 ### Routes
 
-Routing in Routar is slightly different from other routes, but is targeted towards making it much simpler.
+Routing in Routex is slightly different from other routes, but is targeted towards making it much simpler.
 
 To start, you can use the `.get`, `.post`, `.delete`, `.patch`, `.put`, and `.any` (all aliasing to `.route`) to attach single routes to a router. These methods are chainable, and can be in any order (uses exact match):
 
 ```js
-const { TextBody, JsonBody } = require("routar");
+const { TextBody, JsonBody } = require("routex");
 
 app
   .get("/", ctx => {
@@ -87,7 +87,7 @@ app.child("/child").get("/", ctx => {
 
 // Or
 
-const { Router } = require("routar");
+const { Router } = require("routex");
 
 const parentsRouter = new Router();
 
@@ -136,10 +136,10 @@ app
 
 #### Express Middlewares
 
-Routar has built-in support for Express/Connect/callback style middlewares.
+Routex has built-in support for Express/Connect/callback style middlewares.
 
 ```js
-const { useExpress, JsonBody } = require("routar");
+const { useExpress, JsonBody } = require("routex");
 const bodyParser = require("body-parser");
 
 app.middleware(useExpress(bodyParser.json()));
@@ -153,7 +153,7 @@ This enables the `(req, res) => ...` or `(req, res, next) => ...` syntax.
 
 ### Listening
 
-Using `app.listen` is a simple way to start your Routar server:
+Using `app.listen` is a simple way to start your Routex server:
 
 ```js
 // Can parse port from string
@@ -189,4 +189,4 @@ request(app.handler);
 
 We support all currently active and maintained [Node LTS versions](https://github.com/nodejs/Release), include current Node versions.
 
-Please file feature requests and bugs at the [issue tracker](https://github.com/Cretezy/routar/issues).
+Please file feature requests and bugs at the [issue tracker](https://github.com/Cretezy/routex/issues).

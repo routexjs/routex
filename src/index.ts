@@ -21,7 +21,7 @@ const defaultErrorHandler: ErrorHandler = (ctx, error) => {
   ctx.body = new TextBody(error.message);
 };
 
-export class Routar extends Router {
+export class Routex extends Router {
   public errorHandler = defaultErrorHandler;
 
   public handler = async (

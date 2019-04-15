@@ -1,8 +1,8 @@
 import * as request from "supertest";
-import { ErrorWithStatusCode, Routar, Router } from "../src";
+import { ErrorWithStatusCode, Routex, Router } from "../src";
 
 it("Handles 404", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   return request(app.handler)
     .post("/")
@@ -10,7 +10,7 @@ it("Handles 404", () => {
 });
 
 it("Handles sub-routers error propagation", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   // Uses app/default error handler
   app.child("/1");
@@ -28,7 +28,7 @@ it("Handles sub-routers error propagation", () => {
 });
 
 it("Handles error", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", () => {
     throw new Error("Error");
@@ -41,7 +41,7 @@ it("Handles error", () => {
 });
 
 it("Handles error with status", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", () => {
     throw new ErrorWithStatusCode(400, "Error");
@@ -53,7 +53,7 @@ it("Handles error with status", () => {
     .expect(400);
 });
 it("Handles error with status", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", () => {
     throw new ErrorWithStatusCode(400, "Error");

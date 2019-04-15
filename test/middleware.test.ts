@@ -1,8 +1,8 @@
 import * as request from "supertest";
-import { Routar, useExpress } from "../src";
+import { Routex, useExpress } from "../src";
 
 it("Handles middleware", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app
     .middleware(ctx => {
@@ -23,7 +23,7 @@ it("Handles middleware", () => {
 });
 
 it("Handles express middleware", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app
     .middleware(

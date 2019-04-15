@@ -1,8 +1,8 @@
 import * as request from "supertest";
-import { JsonBody, Methods, Routar } from "../src";
+import { JsonBody, Methods, Routex } from "../src";
 
 it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app
     .get("/", ctx => {
@@ -77,7 +77,7 @@ it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
 });
 
 it("Handles 404", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   return request(app.handler)
     .post("/")
@@ -85,7 +85,7 @@ it("Handles 404", () => {
 });
 
 it("Handles array handlers", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", [
     ctx => {
@@ -106,7 +106,7 @@ it("Handles array handlers", () => {
 });
 
 it("Handles multiple routes", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app
     .get("/women", ctx => {
@@ -142,7 +142,7 @@ it("Handles multiple routes", () => {
 });
 
 it("Handles sub-routers", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.child("/child").get("/", ctx => {
     ctx.body = new JsonBody({ name: "joey" });

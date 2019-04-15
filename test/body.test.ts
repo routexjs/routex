@@ -1,8 +1,8 @@
 import * as request from "supertest";
-import { JsonBody, Routar, TextBody } from "../src";
+import { JsonBody, Routex, TextBody } from "../src";
 
 it("Handles JSON pretty print", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" }, { pretty: true });
@@ -16,7 +16,7 @@ it("Handles JSON pretty print", () => {
 });
 
 it("Handles custom JSON pretty print", () => {
-  const app = new Routar();
+  const app = new Routex();
 
   app.get("/", ctx => {
     ctx.body = new JsonBody({ name: "john" }, { pretty: "\t" });
@@ -30,7 +30,7 @@ it("Handles custom JSON pretty print", () => {
 });
 
 it("Handles string body", () => {
-  const app = new Routar();
+  const app = new Routex();
   app.get("/", ctx => {
     ctx.body = new TextBody("hello");
   });
