@@ -17,7 +17,7 @@ Install:
 ```bash
 yarn add routex
 # or
-npm add routax
+npm add routex
 ```
 
 Setup your app:
