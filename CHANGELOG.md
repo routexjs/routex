@@ -1,3 +1,7 @@
+## 0.0.5 - 2019-04-25
+
+- Re-release of v0.0.4 (forgot to build)
+
 ## 0.0.4 - 2019-04-25
 
 - Exported `Handler`
