@@ -1,4 +1,8 @@
-## 0.0.3 - unreleased
+## 0.0.4 - 2019-04-25
+
+- Exported `Handler`
+
+## 0.0.3 - 2019-04-15
 
 - Change `(req, res) => ...` to `ctx => ...`
 - Add `ctx.body`

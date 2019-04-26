@@ -5,10 +5,18 @@ import { JsonBody } from "./body/json";
 import { TextBody } from "./body/text";
 import { ErrorWithStatusCode } from "./error";
 import { useExpress } from "./express";
-import { ErrorHandler, ICtx, Methods, Router } from "./router";
+import { ErrorHandler, Handler, ICtx, Methods, Router } from "./router";
 import { isString } from "./utils";
 
-export { Router, ErrorWithStatusCode, useExpress, JsonBody, TextBody, Methods };
+export {
+  Router,
+  ErrorWithStatusCode,
+  useExpress,
+  JsonBody,
+  TextBody,
+  Methods,
+  Handler
+};
 
 export interface IListenOptions {
   hostname?: string;
@@ -91,9 +99,12 @@ export class Routex extends Router {
         });
       });
 
+    const address = server.address();
+
     return {
       close,
-      port: (server.address() as AddressInfo).port as number,
+      port:
+        address && !isString(address) ? (address as AddressInfo).port : null,
       server
     };
   }
