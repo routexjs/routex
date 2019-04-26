@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "Modern Node router",
   "keywords": [
+    "routex",
     "router"
   ],
   "repository": {
