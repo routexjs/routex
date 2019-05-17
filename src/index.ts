@@ -15,7 +15,8 @@ export {
   JsonBody,
   TextBody,
   Methods,
-  Handler
+  Handler,
+  ICtx
 };
 
 export interface IListenOptions {
