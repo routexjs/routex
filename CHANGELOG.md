@@ -1,3 +1,7 @@
+## 0.0.9 - unreleased
+
+- Add documentation on query string, headers, and body parser
+
 ## 0.0.8 - 2019-05-17
 
 - Allow full child routers

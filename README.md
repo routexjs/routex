@@ -185,6 +185,32 @@ const server = http.createServer(app.handler);
 request(app.handler);
 ```
 
+### Data
+
+#### Query String
+
+Query string is parsed using `ctx.query`, as an object:
+
+```js
+app.get("/", ctx => {
+  ctx.body = new TextBody(ctx.query.name);
+});
+```
+
+#### Headers
+
+Headers are under `ctx.req.headers`. Make sure to use the lowercase key name (`Authorization` because `authorization`):
+
+```js
+app.get("/", ctx => {
+  ctx.body = new TextBody(ctx.req.headers.host);
+});
+```
+
+#### Body
+
+For body parsing, use [`@routex/body-parser`](https://www.npmjs.com/package/@routex/body-parser).
+
 ## Support
 
 We support all currently active and maintained [Node LTS versions](https://github.com/nodejs/Release), include current Node versions.
