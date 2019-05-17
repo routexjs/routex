@@ -1,9 +1,12 @@
 import * as http from "http";
 import { AddressInfo } from "net";
+import * as parseUrl from "parseurl";
+import * as qs from "qs";
 
 import { JsonBody } from "./body/json";
 import { TextBody } from "./body/text";
-import { ErrorWithStatusCode } from "./error";
+import { ErrorWithBody } from "./errors/body";
+import { ErrorWithStatusCode } from "./errors/status";
 import { useExpress } from "./express";
 import { ErrorHandler, Handler, ICtx, Methods, Router } from "./router";
 import { isString } from "./utils";
@@ -11,6 +14,7 @@ import { isString } from "./utils";
 export {
   Router,
   ErrorWithStatusCode,
+  ErrorWithBody,
   useExpress,
   JsonBody,
   TextBody,
@@ -23,11 +27,12 @@ export interface IListenOptions {
   hostname?: string;
 }
 
-const defaultErrorHandler: ErrorHandler = (ctx, error) => {
+export const defaultErrorHandler: ErrorHandler = (ctx, error) => {
   ctx.statusCode =
     error instanceof ErrorWithStatusCode ? error.statusCode : 500;
 
-  ctx.body = new TextBody(error.message);
+  ctx.body =
+    error instanceof ErrorWithBody ? error.body : new TextBody(error.message);
 };
 
 export class Routex extends Router {
@@ -37,10 +42,19 @@ export class Routex extends Router {
     req: http.IncomingMessage,
     res: http.ServerResponse
   ) => {
+    // Parse query string and extract path
+    const parsed = parseUrl(req);
+    const query =
+      parsed &&
+      (isString(parsed.query)
+        ? qs.parse(parsed.query as string)
+        : parsed.query);
+
     /* istanbul ignore next */
     const ctx: ICtx = {
       data: {},
-      path: req.url || "",
+      path: (parsed && parsed.pathname) || "/",
+      query: query || {},
       req,
       res
     };
@@ -105,6 +119,7 @@ export class Routex extends Router {
     return {
       close,
       port:
+        /* istanbul ignore next */
         address && !isString(address) ? (address as AddressInfo).port : null,
       server
     };

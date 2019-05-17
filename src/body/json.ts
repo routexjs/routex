@@ -22,4 +22,6 @@ export class JsonBody implements IBody {
   public write = (response: ServerResponse) => {
     response.write(this.body);
   };
+
+  public toString = () => this.body;
 }

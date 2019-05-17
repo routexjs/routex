@@ -1,3 +1,9 @@
+## 0.0.8 - 2019-05-17
+
+- Allow full child routers
+- Add query string handling (under `ctx.query`)
+  - Fix matching with query string
+
 ## 0.0.7 - 2019-05-17
 
 - Re-release of v0.0.6 (forgot to build again)

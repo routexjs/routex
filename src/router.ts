@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 
 import { IBody } from "./body";
-import { ErrorWithStatusCode } from "./error";
+import { ErrorWithStatusCode } from "./errors/status";
 import { IRouteOptions, Route } from "./route";
 import { toLowerCases } from "./utils";
 
@@ -20,6 +20,7 @@ export interface ICtx {
   path: string;
   data: any;
   body?: IBody;
+  query: any;
   statusCode?: number;
 }
 
@@ -116,8 +117,8 @@ export class Router {
         throw new ErrorWithStatusCode(400, "Invalid request");
       }
 
-      if (!ctx.path) {
-        ctx.path = "/";
+      if (!ctx.path || !ctx.path.startsWith("/")) {
+        ctx.path = "/" + (ctx.path || "");
       }
 
       const method = ctx.req.method.toLowerCase() as Methods;

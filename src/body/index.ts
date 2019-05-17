@@ -5,4 +5,5 @@ export interface IBody {
   readonly contentType: string;
 
   readonly write: (response: ServerResponse) => void;
+  readonly toString: () => string;
 }

@@ -168,3 +168,20 @@ it("Handles sub-routers", () => {
       .expect(404)
   ]);
 });
+
+it("Handles full sub-routers", () => {
+  const app = new Routex();
+
+  app
+    .child("/")
+    .child("/test")
+    .get("/child", ctx => {
+      ctx.body = new JsonBody({ name: "joey" });
+    });
+
+  return request(app.handler)
+    .get("/test/child")
+    .expect("Content-Type", /json/)
+    .expect("Content-Length", "15")
+    .expect(200);
+});

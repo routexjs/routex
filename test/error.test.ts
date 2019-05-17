@@ -1,5 +1,12 @@
 import * as request from "supertest";
-import { ErrorWithStatusCode, Routex, Router } from "../src";
+import {
+  ErrorWithStatusCode,
+  Routex,
+  Router,
+  ErrorWithBody,
+  JsonBody,
+  TextBody
+} from "../src";
 
 it("Handles 404", () => {
   const app = new Routex();
@@ -52,11 +59,12 @@ it("Handles error with status", () => {
     .expect("Error")
     .expect(400);
 });
-it("Handles error with status", () => {
+
+it("Handles error with body", () => {
   const app = new Routex();
 
   app.get("/", () => {
-    throw new ErrorWithStatusCode(400, "Error");
+    throw new ErrorWithBody(400, new TextBody("Error"));
   });
 
   return request(app.handler)
