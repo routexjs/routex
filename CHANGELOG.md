@@ -1,6 +1,7 @@
-## 0.0.9 - unreleased
+## 0.0.9 - 2019-05-18
 
-- Add documentation on query string, headers, and body parser
+- Add documentation on query string, headers, body parser, and cookies
+- Export `Middleware`
 
 ## 0.0.8 - 2019-05-17
 

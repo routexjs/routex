@@ -211,6 +211,10 @@ app.get("/", ctx => {
 
 For body parsing, use [`@routex/body-parser`](https://www.npmjs.com/package/@routex/body-parser).
 
+#### Cookies
+
+For cookies, use [`@routex/cookies`](https://www.npmjs.com/package/@routex/cookies).
+
 ## Support
 
 We support all currently active and maintained [Node LTS versions](https://github.com/nodejs/Release), include current Node versions.

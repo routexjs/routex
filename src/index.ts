@@ -8,7 +8,14 @@ import { TextBody } from "./body/text";
 import { ErrorWithBody } from "./errors/body";
 import { ErrorWithStatusCode } from "./errors/status";
 import { useExpress } from "./express";
-import { ErrorHandler, Handler, ICtx, Methods, Router } from "./router";
+import {
+  ErrorHandler,
+  Handler,
+  ICtx,
+  Methods,
+  Middleware,
+  Router
+} from "./router";
 import { isString } from "./utils";
 
 export {
@@ -20,6 +27,7 @@ export {
   TextBody,
   Methods,
   Handler,
+  Middleware,
   ICtx
 };
 
