@@ -22,6 +22,28 @@ it("Handles middleware", () => {
     .expect(200);
 });
 
+it("Handles middlewares", () => {
+  const app = new Routex();
+
+  app
+    .middleware([
+      ctx => {
+        ctx.res.write("A");
+      },
+      ctx => {
+        ctx.res.write("B");
+      }
+    ])
+    .get("/", ctx => {
+      ctx.res.write("C");
+    });
+
+  return request(app.handler)
+    .get("/")
+    .expect("ABC")
+    .expect(200);
+});
+
 it("Handles express middleware", () => {
   const app = new Routex();
 

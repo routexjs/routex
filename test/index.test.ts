@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { JsonBody, Methods, Routex } from "../src";
+import { ICtx, JsonBody, Methods, Middleware, Router, Routex } from "../src";
 
 it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
   const app = new Routex();
@@ -166,6 +166,41 @@ it("Handles sub-routers", () => {
       .expect("Content-Type", /json/)
       .expect("Content-Length", "13")
       .expect(404)
+  ]);
+});
+
+it("Handles sub-routers with middlewares", () => {
+  const app = new Routex();
+
+  const write = (x: string): Middleware => (ctx: ICtx) => {
+    ctx.res.write(x);
+  };
+
+  app.child("/a", [null, write("A")]).get("/", () => {});
+  app.child("/ab", [null, [write("A"), write("B")]]).get("/", () => {});
+
+  const c = new Router();
+  c.get("/", ctx => {
+    ctx.res.write("C");
+  });
+
+  app.child("/abc", [c, [write("A"), write("B")]]);
+
+  const handler = request(app.handler);
+
+  return Promise.all([
+    handler
+      .get("/a")
+      .expect(200)
+      .expect("A"),
+    handler
+      .get("/ab")
+      .expect(200)
+      .expect("AB"),
+    handler
+      .get("/abc")
+      .expect(200)
+      .expect("ABC")
   ]);
 });
 

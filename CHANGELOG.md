@@ -1,3 +1,8 @@
+## 0.0.11 - 2019-05-19
+
+- Add attaching multiple middlewares at once
+- Add creating sub-routers with middlewares
+
 ## 0.0.10 - 2019-05-18
 
 - Add handling for `OPTIONS`

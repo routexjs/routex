@@ -2,8 +2,9 @@ import { IncomingMessage, ServerResponse } from "http";
 
 import { IBody } from "./body";
 import { ErrorWithStatusCode } from "./errors/status";
+import { Middleware } from "./index";
 import { IRouteOptions, Route } from "./route";
-import { toLowerCases } from "./utils";
+import { toArray, toLowerCases } from "./utils";
 
 export enum Methods {
   GET = "get",
@@ -48,6 +49,8 @@ type RouteAdder = (
   options?: IRouteOptions
 ) => Router;
 
+type RouterWithMiddlewares = [Router | null, Middleware | Middleware[]];
+
 export class Router {
   public errorHandler: ErrorHandler | undefined;
 
@@ -61,8 +64,27 @@ export class Router {
   private routes: Route[] = [];
   private middlewares: Middleware[] = [];
 
-  public child = (path: string, handler?: Router, options?: IRouteOptions) => {
-    const router = handler || new Router();
+  public child = (
+    path: string,
+    handler?: Router | RouterWithMiddlewares,
+    options?: IRouteOptions
+  ) => {
+    let router: Router | undefined | null;
+
+    let routerMiddlewares: Middleware[] | undefined;
+    if (handler instanceof Router) {
+      router = handler;
+    } else if (Array.isArray(handler)) {
+      router = handler[0];
+      routerMiddlewares = toArray(handler[1]);
+    }
+
+    if (!router) {
+      router = new Router();
+    }
+    if (routerMiddlewares) {
+      router.middleware(routerMiddlewares);
+    }
 
     this.routes.push(new Route(undefined, path, router, options));
 
@@ -94,9 +116,9 @@ export class Router {
     return this.route(undefined, path, handler, options);
   };
 
-  public middleware = (middleware: Middleware) => {
+  public middleware = (middleware: Middleware | Middleware[]) => {
     if (middleware) {
-      this.middlewares.push(middleware);
+      this.middlewares.push(...toArray(middleware));
     }
 
     return this;
@@ -171,11 +193,19 @@ export class Router {
       });
 
       if (route) {
-        await route.handle(ctx);
-
-        for (const middelwareNext of middlewaresNext) {
-          await middelwareNext();
+        async function applyNextMiddlewares() {
+          for (const middelwareNext of middlewaresNext) {
+            await middelwareNext();
+          }
         }
+        try {
+          await route.handle(ctx);
+        } catch (error) {
+          await applyNextMiddlewares();
+          throw error;
+        }
+        await applyNextMiddlewares();
+
         return;
       }
       if (method === Methods.OPTIONS) {

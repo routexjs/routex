@@ -98,6 +98,28 @@ parentsRouter.get("/", ctx => {
 app.child("/parents", parentsRouter);
 ```
 
+You can also apply middlewares when creating child routers:
+
+```js
+const firstNameMiddleware = ctx => {
+  ctx.data.firstName = "john";
+};
+const lastNameMiddleware = ctx => {
+  ctx.data.lastName = "smith";
+};
+
+const { Router } = require("routex");
+const childRouter = new Router();
+
+app.child("/firstName", [childRouter, firstNameMiddleware]);
+app.child("/name", [childRouter, [firstNameMiddleware, lastNameMiddleware]]);
+
+// Or
+
+app.child("/firstName", [null, firstNameMiddleware]);
+app.child("/name", [null, [firstNameMiddleware, lastNameMiddleware]]);
+```
+
 ### Handler
 
 A handler can be:
@@ -131,6 +153,26 @@ app
   })
   .get("/", ctx => {
     ctx.res.write(`My name is ${ctx.data.name}`);
+  });
+```
+
+You can also apply multiple middlewares at once:
+
+```js
+app
+  .middleware([
+    ctx => {
+      ctx.data.firstName = "john";
+    },
+    ctx => {
+      ctx.data.lastName = "smith";
+    }
+  ])
+  .get("/", ctx => {
+    ctx.body = new JsonBody({
+      firstName: ctx.data.firstName,
+      lastName: ctx.data.lastName
+    });
   });
 ```
 
