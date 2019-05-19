@@ -61,6 +61,7 @@ export class Routex extends Router {
     /* istanbul ignore next */
     const ctx: ICtx = {
       data: {},
+      params: {},
       path: (parsed && parsed.pathname) || "/",
       query: query || {},
       req,

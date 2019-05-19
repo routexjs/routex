@@ -22,3 +22,20 @@ export function toArray<T>(value: T[] | T): T[] {
   }
   return [value];
 }
+
+// From Express
+export function decodeParam(value: any) {
+  if (!isString(value) || !value.length) {
+    return value;
+  }
+
+  try {
+    return decodeURIComponent(value);
+  } catch (error) {
+    if (error instanceof URIError) {
+      error.message = "Failed to decode param '" + value + "'";
+    }
+
+    throw error;
+  }
+}

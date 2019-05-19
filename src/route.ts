@@ -11,6 +11,7 @@ export class Route {
   public path: string | undefined;
   public regex: RegExp | undefined;
   public handler: RouteHandler;
+  public keys: pathToRegexp.Key[] = [];
 
   constructor(
     method: Methods | Methods[] | undefined,
@@ -21,7 +22,7 @@ export class Route {
     this.method = method;
     this.path = path;
     if (path) {
-      this.regex = pathToRegexp(path, undefined, { end: exact });
+      this.regex = pathToRegexp(path, this.keys, { end: exact });
     }
 
     this.handler = handler;

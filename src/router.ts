@@ -4,7 +4,7 @@ import { IBody } from "./body";
 import { ErrorWithStatusCode } from "./errors/status";
 import { Middleware } from "./index";
 import { IRouteOptions, Route } from "./route";
-import { toArray, toLowerCases } from "./utils";
+import { decodeParam, toArray, toLowerCases } from "./utils";
 
 export enum Methods {
   GET = "get",
@@ -18,6 +18,7 @@ export enum Methods {
 const allMethods = Object.values(Methods);
 
 export interface ICtx {
+  params: { [key: string]: string };
   req: IncomingMessage;
   res: ServerResponse;
   matches?: RegExpExecArray[];
@@ -150,7 +151,8 @@ export class Router {
       const url: string = ctx.path;
 
       let route: Route | undefined;
-      let match: RegExpExecArray | null;
+      let match: RegExpExecArray | undefined | null;
+      const params: { [key: string]: string } = {};
 
       const optionsAllowedMethods: Methods[] = [];
 
@@ -192,13 +194,24 @@ export class Router {
         return true;
       });
 
-      if (route) {
+      if (route && match) {
         async function applyNextMiddlewares() {
           for (const middelwareNext of middlewaresNext) {
             await middelwareNext();
           }
         }
+
         try {
+          for (let index = 1; index < match.length; index++) {
+            const key = route.keys[index - 1];
+            const prop = key.name;
+            const value = decodeParam(match[index]);
+            if (value !== undefined && !(prop in params)) {
+              params[prop] = value;
+            }
+          }
+
+          ctx.params = { ...ctx.params, ...params };
           await route.handle(ctx);
         } catch (error) {
           await applyNextMiddlewares();

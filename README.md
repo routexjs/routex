@@ -76,6 +76,16 @@ app.any("/", ctx => {
 });
 ```
 
+### Params
+
+Params are available with the same syntax as [`path-to-regexp`](https://npmjs.org/package/path-to-regexp):
+
+```js
+app.get("/:name", ctx => {
+  ctx.body = new TextBody(ctx.params.name);
+});
+```
+
 ### Child Routers
 
 Child routers are useful to functionally split your application in smaller units:

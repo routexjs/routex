@@ -1,5 +1,13 @@
 import * as request from "supertest";
-import { ICtx, JsonBody, Methods, Middleware, Router, Routex } from "../src";
+import {
+  ICtx,
+  JsonBody,
+  Methods,
+  Middleware,
+  Router,
+  Routex,
+  TextBody
+} from "../src";
 
 it("Handles GET/POST/DELETE/PATCH/PUT index request", () => {
   const app = new Routex();
@@ -219,4 +227,40 @@ it("Handles full sub-routers", () => {
     .expect("Content-Type", /json/)
     .expect("Content-Length", "15")
     .expect(200);
+});
+
+it("Handles params", () => {
+  const app = new Routex();
+
+  app
+    .get("/letter/:letter?", ctx => {
+      ctx.body = new TextBody(ctx.params.letter || "");
+    })
+    .get("/:name", ctx => {
+      ctx.body = new JsonBody({ name: ctx.params.name });
+    });
+
+  const handler = request(app.handler);
+
+  return Promise.all([
+    handler
+      .get("/john")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "15")
+      .expect(200),
+    handler
+      .get("/john%20smith")
+      .expect("Content-Type", /json/)
+      .expect("Content-Length", "21")
+      .expect(200),
+    handler
+      .get("/letter/a")
+      .expect("a")
+      .expect(200),
+    handler
+      .get("/letter")
+      .expect("")
+      .expect(200),
+    handler.get("/letter/%^").expect(500)
+  ]);
 });

@@ -1,3 +1,7 @@
+## 0.0.12 - 2019-05-19
+
+- Add params
+
 ## 0.0.11 - 2019-05-19
 
 - Add attaching multiple middlewares at once
