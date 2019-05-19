@@ -10,8 +10,11 @@ export enum Methods {
   POST = "post",
   DELETE = "delete",
   PUT = "put",
-  PATCH = "patch"
+  PATCH = "patch",
+  OPTIONS = "options"
 }
+
+const allMethods = Object.values(Methods);
 
 export interface ICtx {
   req: IncomingMessage;
@@ -127,7 +130,27 @@ export class Router {
       let route: Route | undefined;
       let match: RegExpExecArray | null;
 
+      const optionsAllowedMethods: Methods[] = [];
+
       this.routes.some(testRoute => {
+        if (testRoute.regex) {
+          match = testRoute.regex.exec(url);
+          if (!match) {
+            return false;
+          } else {
+            // Lots of ifs, but need to be explicit for TypeScript
+            if (testRoute.method) {
+              if (Array.isArray(testRoute.method)) {
+                optionsAllowedMethods.push(...testRoute.method);
+              } else {
+                optionsAllowedMethods.push(testRoute.method);
+              }
+            } else {
+              optionsAllowedMethods.push(...allMethods);
+            }
+          }
+        }
+
         const matchesMethod =
           testRoute.method &&
           testRoute.method !== method &&
@@ -137,13 +160,6 @@ export class Router {
 
         if (matchesMethod) {
           return false;
-        }
-
-        if (testRoute.regex) {
-          match = testRoute.regex.exec(url);
-          if (!match) {
-            return false;
-          }
         }
 
         if (match) {
@@ -160,6 +176,19 @@ export class Router {
         for (const middelwareNext of middlewaresNext) {
           await middelwareNext();
         }
+        return;
+      }
+      if (method === Methods.OPTIONS) {
+        // Prevent duplicates methods, all upper-case
+        const methods: string[] = [];
+        optionsAllowedMethods.forEach(optionsMethod => {
+          if (methods.includes(optionsMethod.toUpperCase())) {
+            return;
+          }
+          methods.push(optionsMethod.toUpperCase());
+        });
+
+        ctx.res.setHeader("Allow", methods.join(", "));
         return;
       }
 

@@ -1,3 +1,7 @@
+## 0.0.10 - 2019-05-18
+
+- Add handling for `OPTIONS`
+
 ## 0.0.9 - 2019-05-18
 
 - Add documentation on query string, headers, body parser, and cookies
