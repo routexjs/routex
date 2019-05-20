@@ -1,4 +1,4 @@
-# Routex [![npm](https://img.shields.io/npm/v/routex.svg)](https://www.npmjs.com/package/routex) [![Travis CI](https://img.shields.io/travis/com/Cretezy/routex.svg)](https://travis-ci.com/Cretezy/routex) [![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routex.svg)](https://codecov.io/gh/Cretezy/routex)
+# Routex [![npm](https://img.shields.io/npm/v/routex.svg)](https://www.npmjs.com/package/routex) [![Travis CI](https://img.shields.io/travis/com/Cretezy/routex.svg)](https://travis-ci.com/Cretezy/routex) [![Codecov](https://img.shields.io/codecov/c/github/Cretezy/routex.svg)](https://codecov.io/gh/Cretezy/routex) [![Greenkeeper badge](https://badges.greenkeeper.io/Cretezy/routex.svg)](https://greenkeeper.io/)
 
 Modern Node router.
 
