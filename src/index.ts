@@ -6,17 +6,15 @@ import * as qs from "qs";
 import { JsonBody } from "./body/json";
 import { TextBody } from "./body/text";
 import { ErrorWithBody } from "./errors/body";
+import { defaultErrorHandler } from "./errors/defaultHandler";
 import { ErrorWithStatusCode } from "./errors/status";
 import { useExpress } from "./express";
-import {
-  ErrorHandler,
-  Handler,
-  ICtx,
-  Methods,
-  Middleware,
-  Router
-} from "./router";
-import { isString } from "./utils";
+import { Methods } from "./methods";
+import { Router } from "./router";
+import { AppMiddleware, IAppMiddleware } from "./types/appMiddleware";
+import { ICtx } from "./types/ctx";
+import { ErrorHandler, Handler, Middleware } from "./types/handler";
+import { isString, toArray } from "./utils";
 
 export {
   Router,
@@ -28,24 +26,40 @@ export {
   Methods,
   Handler,
   Middleware,
-  ICtx
+  IAppMiddleware,
+  AppMiddleware,
+  ICtx,
+  defaultErrorHandler,
+  ErrorHandler
 };
 
 export interface IListenOptions {
   hostname?: string;
+  server?: http.Server;
 }
-
-export const defaultErrorHandler: ErrorHandler = (ctx, error) => {
-  ctx.statusCode =
-    error instanceof ErrorWithStatusCode ? error.statusCode : 500;
-
-  ctx.body =
-    error instanceof ErrorWithBody ? error.body : new TextBody(error.message);
-};
 
 export class Routex extends Router {
   public errorHandler = defaultErrorHandler;
+  private appMiddlewares: IAppMiddleware[] = [];
 
+  /**
+   * Adds app middleware(s)
+   */
+  public appMiddleware = (appMiddleware: AppMiddleware | AppMiddleware[]) => {
+    if (appMiddleware) {
+      this.appMiddlewares.push(
+        ...toArray(appMiddleware).map(appMiddlewareOne =>
+          appMiddlewareOne(this)
+        )
+      );
+    }
+
+    return this;
+  };
+
+  /**
+   * Handles HTTP request
+   */
   public handler = async (
     req: http.IncomingMessage,
     res: http.ServerResponse
@@ -84,11 +98,16 @@ export class Routex extends Router {
     }
 
     ctx.res.end();
+
+    return ctx;
   };
 
+  /**
+   * Starts HTTP server
+   */
   public async listen(
     port?: number | string,
-    { hostname }: IListenOptions = {}
+    { hostname, server: optionsServer }: IListenOptions = {}
   ) {
     if (port) {
       const originalPort = port;
@@ -106,7 +125,9 @@ export class Routex extends Router {
       throw new Error(`Invalid hostname (${hostname} is not a string)`);
     }
 
-    const server = http.createServer(this.handler);
+    const server = this.initializeServer(
+      optionsServer || http.createServer(this.handler)
+    );
 
     await new Promise(resolve => {
       server.listen(port as number, hostname, resolve);
@@ -132,5 +153,18 @@ export class Routex extends Router {
         address && !isString(address) ? (address as AddressInfo).port : null,
       server
     };
+  }
+
+  /**
+   * Decorates a server using app middlewares
+   */
+  public initializeServer(server: http.Server) {
+    return this.appMiddlewares.reduce(
+      (reducingServer, appMiddleware) =>
+        (appMiddleware.initializeServer &&
+          appMiddleware.initializeServer(reducingServer)) ||
+        reducingServer,
+      server
+    );
   }
 }

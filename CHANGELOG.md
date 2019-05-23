@@ -1,3 +1,9 @@
+## 0.0.13 - 2019-05-23
+
+- Add app middlewares
+- Add more code documentation
+- Small refactor
+
 ## 0.0.12 - 2019-05-19
 
 - Add params

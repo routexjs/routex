@@ -1,8 +1,7 @@
-import { Handler } from "./router";
-
 // TODO: Use proper Connect typings
-// tslint:disable-next-line:ban-types
-export function useExpress(handler: Function): Handler {
+import { Handler } from "./types/handler";
+
+export function useExpress(handler: any): Handler {
   return async ctx => {
     if (handler.length >= 3) {
       return new Promise<void>(resolve => {

@@ -41,7 +41,8 @@ app.listen(port).then(() => console.log(`Listening on ${port}`));
 
 Routing in Routex is slightly different from other routes, but is targeted towards making it much simpler.
 
-To start, you can use the `.get`, `.post`, `.delete`, `.patch`, `.put`, and `.any` (all aliasing to `.route`) to attach single routes to a router. These methods are chainable, and can be in any order (uses exact match):
+To start, you can use the `.get`, `.post`, `.delete`, `.patch`, `.put`, and `.any` (all aliasing to `.route`) to attach single routes to a router.
+These methods are chainable, and can be in any order (uses exact match):
 
 ```js
 const { TextBody, JsonBody } = require("routex");
@@ -141,7 +142,8 @@ A handler can be:
 
 ### Middlewares
 
-Middlewares are triggered at the start and end of handing a router. A middleware is a handler that can return a function/Promise (to be called at the end of the request):
+Middlewares are triggered at the start and end of handing a router.
+A middleware is a handler that can return a function/Promise (to be called at the end of the request):
 
 ```js
 app
@@ -225,6 +227,10 @@ app.listen().then(async ({ port, server, close }) => {
   // Close server,
   await close();
 });
+
+// Using a custom http.Server
+const server = http.createServer(app.handler);
+app.listen({ server });
 ```
 
 To use in testing or in `http.createServer`, you can use `app.handler`:
@@ -251,7 +257,8 @@ app.get("/", ctx => {
 
 #### Headers
 
-Headers are under `ctx.req.headers`. Make sure to use the lowercase key name (`Authorization` because `authorization`):
+Headers are under `ctx.req.headers`.
+Make sure to use the lowercase key name (`Authorization` because `authorization`):
 
 ```js
 app.get("/", ctx => {
@@ -267,8 +274,29 @@ For body parsing, use [`@routex/body-parser`](https://www.npmjs.com/package/@rou
 
 For cookies, use [`@routex/cookies`](https://www.npmjs.com/package/@routex/cookies).
 
+#### WebSockets
+
+For WebSockets, use [`@routex/websocket`](https://www.npmjs.com/package/@routex/websocket).
+
+### App Middleware
+
+App middlewares are designed to be low-level to customize the server.
+An example is [`@routex/websocket`](https://www.npmjs.com/package/@routex/websocket).
+
+```js
+const myAppMiddleware = routex => ({
+  initializeServer(server) {
+    // Do something with the http.Server, before starting to listen
+  }
+});
+
+// Apply it
+app.appMiddleware(myAppMiddleware);
+```
+
 ## Support
 
-We support all currently active and maintained [Node LTS versions](https://github.com/nodejs/Release), include current Node versions.
+We support all currently active and maintained [Node LTS versions](https://github.com/nodejs/Release),
+include current Node versions.
 
 Please file feature requests and bugs at the [issue tracker](https://github.com/Cretezy/routex/issues).

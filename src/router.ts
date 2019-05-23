@@ -1,48 +1,9 @@
-import { IncomingMessage, ServerResponse } from "http";
-
-import { IBody } from "./body";
 import { ErrorWithStatusCode } from "./errors/status";
-import { Middleware } from "./index";
+import { Handler, Middleware } from "./index";
+import { allMethods, Methods } from "./methods";
 import { IRouteOptions, Route } from "./route";
+import { ErrorHandler, RouteHandler } from "./types/handler";
 import { decodeParam, toArray, toLowerCases } from "./utils";
-
-export enum Methods {
-  GET = "get",
-  POST = "post",
-  DELETE = "delete",
-  PUT = "put",
-  PATCH = "patch",
-  OPTIONS = "options"
-}
-
-const allMethods = Object.values(Methods);
-
-export interface ICtx {
-  params: { [key: string]: string };
-  req: IncomingMessage;
-  res: ServerResponse;
-  matches?: RegExpExecArray[];
-  path: string;
-  data: any;
-  body?: IBody;
-  query: any;
-  statusCode?: number;
-}
-
-export type Handler = (ctx: ICtx) => Promise<void> | void;
-
-export type Middleware = (ctx: ICtx) => (() => void) | Promise<void> | void;
-
-// export interface IJsonOptions {
-//   pretty?: boolean | string;
-// }
-
-export type ErrorHandler =
-  | Handler
-  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => Promise<any> | any);
-
-type RouteHandler_ = Router | Handler;
-export type RouteHandler = RouteHandler_ | RouteHandler_[];
 
 type RouteAdder = (
   path: string,
