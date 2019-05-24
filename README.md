@@ -243,6 +243,51 @@ const server = http.createServer(app.handler);
 request(app.handler);
 ```
 
+#### HTTPS
+
+Pass a `https` option to the listen options to start an HTTPS server:
+
+```js
+const fs = require("fs");
+
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.crt");
+
+app.listen(3000, {
+  https: {
+    key: privateKey,
+    cert: certificate
+  }
+});
+```
+
+To start both an HTTP and HTTPS server, run `.listen` twice:
+
+```js
+app.listen(3000);
+
+app.listen(3001, {
+  https: {
+    key: privateKey,
+    cert: certificate
+  }
+});
+```
+
+#### Cluster
+
+Cluster can be automatically done using [throng](https://www.npmjs.com/package/throng):
+
+```js
+// Cluster with # of cores automatically
+app.listen(3000, { cluster: true });
+
+// Cluster with a set number of workers
+app.listen(3000, { cluster: 2 });
+```
+
+The worker ID cluster can be accessed using `ctx.workerId` (`null` when not clustering).
+
 ### Data
 
 #### Query String
@@ -265,6 +310,28 @@ app.get("/", ctx => {
   ctx.body = new TextBody(ctx.req.headers.host);
 });
 ```
+
+#### Request ID
+
+Each request is automatically set a request ID (UUID by default), accessible using `ctx.requestId`. It can also be customized:
+
+```js
+// Disables request ID (will be undefined)
+const app = new Routex({
+  requestId: false
+});
+
+// Using a custom request ID generator
+const app = new Routex({
+  requestId: () => new Date().getMilliseconds()
+});
+
+app.get("/", ctx => {
+  ctx.body = new TextBody(`Your request ID is: ${ctx.requestId}`);
+});
+```
+
+### Addons
 
 #### Body
 

@@ -1,3 +1,9 @@
+## 0.0.14 - 2019-05-23
+
+- Add HTTPS
+- Add clustering
+- Add request ID
+
 ## 0.0.13 - 2019-05-23
 
 - Add app middlewares

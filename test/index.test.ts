@@ -264,3 +264,32 @@ it("Handles params", () => {
     handler.get("/letter/%^").expect(500)
   ]);
 });
+
+it("Has request ID", () => {
+  const appUuid = new Routex();
+  appUuid.get("/", ctx => {
+    ctx.body = new TextBody(ctx.requestId!);
+  });
+
+  const appFixed = new Routex({ requestId: () => "FIXED" });
+  appFixed.get("/", ctx => {
+    ctx.body = new TextBody(ctx.requestId!);
+  });
+
+  const appNone = new Routex({ requestId: false });
+  appNone.get("/", ctx => {
+    ctx.body = new TextBody(ctx.requestId === undefined ? "YES" : "NO");
+  });
+
+  return Promise.all([
+    request(appUuid.handler)
+      .get("/")
+      .expect(({ text }) => expect(text.length).toBe(36)),
+    request(appFixed.handler)
+      .get("/")
+      .expect("FIXED"),
+    request(appNone.handler)
+      .get("/")
+      .expect("YES")
+  ]);
+});

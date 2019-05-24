@@ -1,4 +1,4 @@
-export function isString(value: any): boolean {
+export function isString(value: any): value is string {
   return typeof value === "string" || value instanceof String;
 }
 
@@ -17,10 +17,7 @@ export function toLowerCases(
 }
 
 export function toArray<T>(value: T[] | T): T[] {
-  if (Array.isArray(value)) {
-    return value;
-  }
-  return [value];
+  return Array.isArray(value) ? value : [value];
 }
 
 // From Express

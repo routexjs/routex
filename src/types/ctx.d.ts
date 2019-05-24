@@ -3,12 +3,14 @@ import { IBody } from "../body";
 
 export interface ICtx {
   params: { [key: string]: string };
-  req: IncomingMessage;
-  res: ServerResponse;
+  readonly req: IncomingMessage;
+  readonly res: ServerResponse;
   matches?: RegExpExecArray[];
   path: string;
   data: any;
   body?: IBody;
-  query: any;
+  readonly query: any;
   statusCode?: number;
+  readonly workerId?: number;
+  readonly requestId?: string;
 }

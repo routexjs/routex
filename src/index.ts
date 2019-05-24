@@ -1,7 +1,9 @@
 import * as http from "http";
-import { AddressInfo } from "net";
+import * as https from "https";
 import * as parseUrl from "parseurl";
 import * as qs from "qs";
+import * as throng from "throng";
+import * as uuid from "uuid";
 
 import { JsonBody } from "./body/json";
 import { TextBody } from "./body/text";
@@ -36,11 +38,30 @@ export {
 export interface IListenOptions {
   hostname?: string;
   server?: http.Server;
+  https?: https.ServerOptions;
+  cluster?: boolean | number;
+}
+
+export interface IClusterOptions extends IListenOptions {
+  workers?: number | string;
+}
+
+export interface IRoutexOptions {
+  requestId?: (() => string) | false;
 }
 
 export class Routex extends Router {
+  public requestIdGenerator?: () => string;
   public errorHandler = defaultErrorHandler;
   private appMiddlewares: IAppMiddleware[] = [];
+  private workerId?: number;
+
+  constructor({ requestId }: IRoutexOptions = {}) {
+    super();
+    if (requestId !== false) {
+      this.requestIdGenerator = requestId || (() => uuid());
+    }
+  }
 
   /**
    * Adds app middleware(s)
@@ -79,7 +100,11 @@ export class Routex extends Router {
       path: (parsed && parsed.pathname) || "/",
       query: query || {},
       req,
-      res
+      requestId: this.requestIdGenerator
+        ? this.requestIdGenerator()
+        : undefined,
+      res,
+      workerId: this.workerId
     };
 
     await this.handle(ctx);
@@ -103,11 +128,15 @@ export class Routex extends Router {
   };
 
   /**
-   * Starts HTTP server
+   * Starts the server
    */
   public async listen(
     port?: number | string,
-    { hostname, server: optionsServer }: IListenOptions = {}
+    {
+      hostname,
+      server: optionsServer,
+      https: httpsOptions
+    }: IListenOptions = {}
   ) {
     if (port) {
       const originalPort = port;
@@ -117,20 +146,25 @@ export class Routex extends Router {
       }
 
       if (!Number.isInteger(port as number)) {
-        throw new Error(`Invalid port (${originalPort} is not integer).`);
+        throw new TypeError(
+          `Invalid port (${originalPort} is not integer/string).`
+        );
       }
     }
 
     if (hostname && !isString(hostname)) {
-      throw new Error(`Invalid hostname (${hostname} is not a string)`);
+      throw new TypeError(`Invalid hostname (${hostname} is not a string)`);
     }
 
     const server = this.initializeServer(
-      optionsServer || http.createServer(this.handler)
+      optionsServer ||
+        (httpsOptions
+          ? https.createServer(httpsOptions, this.handler)
+          : http.createServer(this.handler))
     );
 
     await new Promise(resolve => {
-      server.listen(port as number, hostname, resolve);
+      server.listen({ port: port as number, host: hostname }, resolve);
     });
 
     const close = () =>
@@ -150,15 +184,29 @@ export class Routex extends Router {
       close,
       port:
         /* istanbul ignore next */
-        address && !isString(address) ? (address as AddressInfo).port : null,
+        address && !isString(address) ? address.port : null,
       server
     };
+  }
+
+  /* istanbul ignore next */
+  public cluster(
+    port?: number | string,
+    { workers, ...options }: IClusterOptions = {}
+  ) {
+    throng({
+      start: id => {
+        this.workerId = id;
+        this.listen(port, options);
+      },
+      workers
+    });
   }
 
   /**
    * Decorates a server using app middlewares
    */
-  public initializeServer(server: http.Server) {
+  public initializeServer(server: http.Server | https.Server) {
     return this.appMiddlewares.reduce(
       (reducingServer, appMiddleware) =>
         (appMiddleware.initializeServer &&
