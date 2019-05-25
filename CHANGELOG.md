@@ -1,3 +1,9 @@
+## 0.0.15 - 2019-05-25
+
+- Move org & docs
+- Add content type to `TextBody` & `JsonBody`
+- Small refactor
+
 ## 0.0.14 - 2019-05-23
 
 - Add HTTPS
