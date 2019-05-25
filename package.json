@@ -6,6 +6,7 @@
     "router",
     "routex"
   ],
+  "homepage": "https://routex.netlify.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/Cretezy/routex"
