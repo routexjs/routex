@@ -9,7 +9,7 @@
   "homepage": "https://routex.netlify.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Cretezy/routex"
+    "url": "https://github.com/routexjs/routex"
   },
   "license": "MIT",
   "author": "Charles Crete <charles@cretezy.com>",
