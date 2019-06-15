@@ -2,7 +2,7 @@
 
 Modern Node router.
 
-[Documentation](https://routex.netlify.com) - [GitHub](https://github.com/routexjs/routex)
+[Documentation](https://routex.js.org) - [GitHub](https://github.com/routexjs/routex)
 
 ### Features
 

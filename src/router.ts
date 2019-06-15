@@ -1,8 +1,8 @@
 import { ErrorWithStatusCode } from "./errors/status";
+import { ErrorHandler, RouteHandler } from "./handler";
 import { Handler, Middleware } from "./index";
 import { allMethods, Methods } from "./methods";
 import { IRouteOptions, Route } from "./route";
-import { ErrorHandler, RouteHandler } from "./types/handler";
 import { decodeParam, toArray, toLowerCases } from "./utils";
 
 type RouteAdder = (

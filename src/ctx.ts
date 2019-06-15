@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http";
-import { IBody } from "../body";
+import { IBody } from "./body";
 
 export interface ICtx {
   params: { [key: string]: string };

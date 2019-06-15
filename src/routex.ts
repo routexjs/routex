@@ -5,10 +5,11 @@ import * as qs from "qs";
 import * as throng from "throng";
 import * as uuid from "uuid";
 
+import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
+import { ICtx } from "./ctx";
 import { defaultErrorHandler } from "./errors/defaultHandler";
+import { ErrorHandler } from "./handler";
 import { Router } from "./router";
-import { AppMiddleware, IAppMiddleware } from "./types/appMiddleware";
-import { ICtx } from "./types/ctx";
 import { isString, toArray } from "./utils";
 
 export interface IListenOptions {
@@ -24,6 +25,7 @@ export interface IClusterOptions extends IListenOptions {
 
 export interface IRoutexOptions {
   requestId?: (() => string) | false;
+  errorHandler?: ErrorHandler;
 }
 
 export class Routex extends Router {
@@ -32,10 +34,14 @@ export class Routex extends Router {
   private appMiddlewares: IAppMiddleware[] = [];
   private workerId?: number;
 
-  constructor({ requestId }: IRoutexOptions = {}) {
+  constructor({ requestId, errorHandler }: IRoutexOptions = {}) {
     super();
     if (requestId !== false) {
       this.requestIdGenerator = requestId || (() => uuid());
+    }
+
+    if (errorHandler) {
+      this.errorHandler = errorHandler;
     }
   }
 

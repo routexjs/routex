@@ -1,3 +1,8 @@
+## 0.0.16 - 2019-06-15
+
+- Add `errorHandler` to Routex class options.
+- Move types
+
 ## 0.0.15 - 2019-05-25
 
 - Move org & docs

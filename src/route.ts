@@ -1,9 +1,9 @@
 import * as pathToRegexp from "path-to-regexp";
 import { Methods } from "./methods";
 
+import { ICtx } from "./ctx";
+import { Handler, RouteHandler } from "./handler";
 import { Router } from "./router";
-import { ICtx } from "./types/ctx";
-import { Handler, RouteHandler } from "./types/handler";
 
 export interface IRouteOptions {
   exact?: boolean;

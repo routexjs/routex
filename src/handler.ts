@@ -1,4 +1,4 @@
-import { ErrorWithStatusCode, Router } from "..";
+import { ErrorWithStatusCode, Router } from ".";
 import { ICtx } from "./ctx";
 
 export type Handler = (ctx: ICtx) => Promise<void> | void;

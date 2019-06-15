@@ -1,5 +1,5 @@
 // TODO: Use proper Connect typings
-import { Handler } from "./types/handler";
+import { Handler } from "./handler";
 
 export function useExpress(handler: any): Handler {
   return async ctx => {

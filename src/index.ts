@@ -13,6 +13,6 @@ export {
   IRoutexOptions,
   Routex
 } from "./routex";
-export { AppMiddleware, IAppMiddleware } from "./types/appMiddleware";
-export { ICtx } from "./types/ctx";
-export { ErrorHandler, Handler, Middleware } from "./types/handler";
+export { AppMiddleware, IAppMiddleware } from "./appMiddleware";
+export { ICtx } from "./ctx";
+export { ErrorHandler, Handler, Middleware } from "./handler";
