@@ -7,10 +7,19 @@ export interface ICtx {
   readonly res: ServerResponse;
   matches?: RegExpExecArray[];
   path: string;
-  data: any;
+  data: ICtxData;
+  providers: ICtxProviders;
   body?: IBody;
   readonly query: any;
   statusCode?: number;
   readonly workerId?: number;
   readonly requestId?: string;
+}
+
+export interface ICtxData {
+  [key: string]: any;
+}
+
+export interface ICtxProviders {
+  [key: string]: any;
 }

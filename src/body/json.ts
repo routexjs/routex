@@ -13,7 +13,7 @@ export class JsonBody implements IBody {
   public readonly contentLength: number;
   public readonly body: string;
 
-  constructor(
+  public constructor(
     body: any,
     { pretty = false, contentType = "application/json" }: IJsonBodyOptions = {}
   ) {

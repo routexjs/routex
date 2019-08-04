@@ -88,7 +88,7 @@ export class Router {
 
   public handle: Handler = async ctx => {
     try {
-      const middlewaresNext: Array<() => void | Promise<void>> = [];
+      const middlewaresNext: (() => void | Promise<void>)[] = [];
 
       for (const middleware of this.middlewares) {
         const next = await middleware(ctx);

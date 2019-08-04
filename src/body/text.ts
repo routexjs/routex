@@ -8,7 +8,7 @@ export class TextBody implements IBody {
   public readonly contentLength: number;
   public readonly body: string;
 
-  constructor(body: string, contentType: string = "text/plain") {
+  public constructor(body: string, contentType: string = "text/plain") {
     this.body = body;
     this.contentLength = this.body.length;
     this.contentType = contentType;

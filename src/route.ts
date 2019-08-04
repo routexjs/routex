@@ -16,7 +16,7 @@ export class Route {
   public handler: RouteHandler;
   public keys: pathToRegexp.Key[] = [];
 
-  constructor(
+  public constructor(
     method: Methods | Methods[] | undefined,
     path: string | undefined,
     handler: RouteHandler,

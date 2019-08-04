@@ -61,6 +61,5 @@ app
   });
 
 app.listen(port).then(({ port: listeningPort }) => {
-  // tslint:disable-next-line:no-console
   console.log(`Listening on ${listeningPort}`);
 });

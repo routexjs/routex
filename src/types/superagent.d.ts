@@ -1,5 +1,5 @@
-// Fixes error with @typse/superagent (https://github.com/DefinitelyTyped/DefinitelyTyped/issues/12044)
+// Fixes error with @types/superagent (https://github.com/DefinitelyTyped/DefinitelyTyped/issues/12044)
 
-/* tslint:disable */
+/* eslint-disable */
 declare interface XMLHttpRequest {}
 declare interface Blob {}

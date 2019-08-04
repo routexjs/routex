@@ -6,7 +6,7 @@ import * as throng from "throng";
 import * as uuid from "uuid";
 
 import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
-import { ICtx } from "./ctx";
+import { ICtx, ICtxProviders } from "./ctx";
 import { defaultErrorHandler } from "./errors/defaultHandler";
 import { ErrorHandler } from "./handler";
 import { Router } from "./router";
@@ -26,6 +26,7 @@ export interface IClusterOptions extends IListenOptions {
 export interface IRoutexOptions {
   requestId?: (() => string) | false;
   errorHandler?: ErrorHandler;
+  providers?: ICtxProviders;
 }
 
 export class Routex extends Router {
@@ -33,8 +34,13 @@ export class Routex extends Router {
   public errorHandler = defaultErrorHandler;
   private appMiddlewares: IAppMiddleware[] = [];
   private workerId?: number;
+  public providers: ICtxProviders;
 
-  constructor({ requestId, errorHandler }: IRoutexOptions = {}) {
+  public constructor({
+    requestId,
+    errorHandler,
+    providers
+  }: IRoutexOptions = {}) {
     super();
     if (requestId !== false) {
       this.requestIdGenerator = requestId || (() => uuid());
@@ -43,6 +49,8 @@ export class Routex extends Router {
     if (errorHandler) {
       this.errorHandler = errorHandler;
     }
+
+    this.providers = providers || {};
   }
 
   /**
@@ -86,7 +94,8 @@ export class Routex extends Router {
         ? this.requestIdGenerator()
         : undefined,
       res,
-      workerId: this.workerId
+      workerId: this.workerId,
+      providers: { ...this.providers }
     };
 
     await this.handle(ctx);

@@ -1,3 +1,10 @@
+## 0.0.17 - 2019-08-04
+
+- Upgrade dependencies
+- Move to ESLint (from TSLint)
+- Add `ICtxData` interface for easier extending
+- Add providers and `ICtxProviders`
+
 ## 0.0.16 - 2019-06-15
 
 - Add `errorHandler` to Routex class options.

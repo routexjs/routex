@@ -1,5 +1,6 @@
 import {
   ErrorWithStatusCode,
+  ICtx,
   JsonBody,
   Routex,
   TextBody,
@@ -7,7 +8,7 @@ import {
 } from "../src";
 
 class ValidationError extends ErrorWithStatusCode {
-  constructor(message?: string) {
+  public constructor(message?: string) {
     super(400, message);
     Object.setPrototypeOf(this, new.target.prototype);
   }
@@ -18,14 +19,14 @@ const port = process.env.PORT || 3000;
 const app = new Routex();
 
 app
-  .get("/", async ctx => {
+  .get("/", async (ctx: ICtx) => {
     ctx.body = new TextBody("Index");
   })
   .get("/error", [
     () => {
       throw new ValidationError("Some error");
     },
-    ctx => {
+    (ctx: ICtx) => {
       ctx.body = new TextBody("Will never be returned");
     }
   ])
@@ -35,13 +36,13 @@ app
       res.write("Express!");
     })
   )
-  .get("/delay", async ctx => {
+  .get("/delay", async (ctx: ICtx) => {
     await new Promise(resolve => setTimeout(resolve, 500));
     ctx.body = new TextBody("Delayed");
   })
   .get(
     "/catch",
-    ctx => {
+    (ctx: ICtx) => {
       ctx.body = new TextBody("Catch");
     },
     { exact: false }
@@ -49,18 +50,17 @@ app
 
 app
   .child("/child")
-  .middleware(ctx => {
+  .middleware((ctx: ICtx) => {
     ctx.res.setHeader("X-Server", "Routex");
     ctx.data.name = "john";
   })
-  .get("/", ctx => {
+  .get("/", (ctx: ICtx) => {
     ctx.body = new TextBody("Child index");
   })
-  .get("/json", ctx => {
+  .get("/json", (ctx: ICtx) => {
     ctx.body = new JsonBody({ child: true, name: ctx.data.name });
   });
 
 app.listen(port).then(({ port: listeningPort }) => {
-  // tslint:disable-next-line:no-console
   console.log(`Listening on ${listeningPort}`);
 });
