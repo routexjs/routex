@@ -17,10 +17,5 @@ module.exports = {
     "@typescript-eslint/interface-name-prefix": ["error", "always"],
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-explicit-any": "off"
-  },
-  settings: {
-    react: {
-      version: "detect"
-    }
   }
 };
