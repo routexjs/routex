@@ -82,7 +82,7 @@
     "@types/throng": "^4.0.2",
     "@types/uuid": "^3.4.5",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
+    "@typescript-eslint/parser": "^2.0.0",
     "codecov": "^3.5.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.0.0",
