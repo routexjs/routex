@@ -8,21 +8,21 @@ interface IJsonBodyOptions {
 export class JsonBody implements IBody {
   public readonly contentType: string;
 
-  public readonly contentLength: number;
-  public readonly body: string;
+  public readonly body: any;
+  private readonly stringBody: string;
 
   public constructor(
     body: any,
     { pretty = false, contentType = "application/json" }: IJsonBodyOptions = {}
   ) {
+    this.body = body;
+
     const space = pretty ? (pretty === true ? "  " : pretty) : undefined;
+    this.stringBody = JSON.stringify(this.body, null, space);
 
-    this.body = JSON.stringify(body, null, space);
-
-    this.contentLength = this.body.length;
     this.contentType = contentType;
   }
 
-  public toString = () => this.body;
-  public toChunk = () => this.body;
+  public toString = () => this.stringBody;
+  public toBuffer = () => Buffer.from(this.stringBody, "utf8");
 }

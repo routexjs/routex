@@ -9,6 +9,7 @@ import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
 import { ICtx, ICtxProviders } from "./ctx";
 import { defaultErrorHandler } from "./errors/defaultHandler";
 import { ErrorHandler } from "./handler";
+import { Methods } from "./methods";
 import { Router } from "./router";
 import { isString, toArray } from "./utils";
 
@@ -81,9 +82,14 @@ export class Routex extends Router {
         : parsed.query);
 
     /* istanbul ignore next */
+    // Default to GET for missing methods (should never happen)
+    const method = (req.method || Methods.GET).toLowerCase() as Methods;
+
+    /* istanbul ignore next */
     return {
       data: {},
       params: {},
+      method,
       path: (parsed && parsed.pathname) || "/",
       query: query || {},
       req,
@@ -107,17 +113,24 @@ export class Routex extends Router {
 
     await this.handle(ctx);
 
-    if (ctx.body && ![204, 304].includes(ctx.statusCode || 0)) {
-      ctx.res.setHeader("Content-Length", ctx.body.contentLength);
-      ctx.res.setHeader("Content-Type", ctx.body.contentType);
+    const chunk = ctx.body ? ctx.body.toBuffer() : undefined;
+
+    if (ctx.body) {
+      if (ctx.body.contentType) {
+        ctx.res.setHeader("Content-Type", ctx.body.contentType);
+      }
+
+      if (chunk && (!ctx.statusCode || ![204, 304].includes(ctx.statusCode))) {
+        ctx.res.setHeader("Content-Length", chunk.length);
+      }
     }
 
     if (ctx.statusCode) {
       ctx.res.writeHead(ctx.statusCode);
     }
 
-    if (ctx.body) {
-      ctx.res.end(ctx.body.toChunk());
+    if (ctx.body && ctx.method !== Methods.HEAD) {
+      ctx.res.end(chunk);
     } else {
       ctx.res.end();
     }

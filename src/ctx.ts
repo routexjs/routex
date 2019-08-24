@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from "http";
 import { IBody } from "./body";
+import { Methods } from "./methods";
 
 export interface ICtx {
   params: { [key: string]: string };
@@ -8,6 +9,7 @@ export interface ICtx {
   matches?: RegExpExecArray[];
   path: string;
   data: ICtxData;
+  method: Methods;
   providers: ICtxProviders;
   body?: IBody;
   readonly query: any;

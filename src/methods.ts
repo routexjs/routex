@@ -4,7 +4,8 @@ export enum Methods {
   DELETE = "delete",
   PUT = "put",
   PATCH = "patch",
-  OPTIONS = "options"
+  OPTIONS = "options",
+  HEAD = "head"
 }
 
 export const allMethods = Object.values(Methods);

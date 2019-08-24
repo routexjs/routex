@@ -98,17 +98,10 @@ export class Router {
         }
       }
 
-      if (!ctx.req.method || !ctx.req.url) {
-        /* istanbul ignore next */
-        // Invalid HTTP request, should never happen
-        throw new ErrorWithStatusCode(400, "Invalid request");
-      }
-
       if (!ctx.path || !ctx.path.startsWith("/")) {
         ctx.path = "/" + (ctx.path || "");
       }
 
-      const method = ctx.req.method.toLowerCase() as Methods;
       const url: string = ctx.path;
 
       let route: Route | undefined;
@@ -138,9 +131,10 @@ export class Router {
 
         const matchesMethod =
           testRoute.method &&
-          testRoute.method !== method &&
+          testRoute.method !== ctx.method &&
           !(
-            Array.isArray(testRoute.method) && testRoute.method.includes(method)
+            Array.isArray(testRoute.method) &&
+            testRoute.method.includes(ctx.method)
           );
 
         if (matchesMethod) {
@@ -182,7 +176,7 @@ export class Router {
 
         return;
       }
-      if (method === Methods.OPTIONS) {
+      if (ctx.method === Methods.OPTIONS) {
         // Prevent duplicates methods, all upper-case
         const methods: string[] = [];
         optionsAllowedMethods.forEach(optionsMethod => {
