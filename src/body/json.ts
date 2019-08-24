@@ -1,5 +1,3 @@
-import { ServerResponse } from "http";
-
 import { IBody } from ".";
 
 interface IJsonBodyOptions {
@@ -25,9 +23,6 @@ export class JsonBody implements IBody {
     this.contentType = contentType;
   }
 
-  public write = (response: ServerResponse) => {
-    response.write(this.body);
-  };
-
   public toString = () => this.body;
+  public toChunk = () => this.body;
 }

@@ -68,13 +68,10 @@ export class Routex extends Router {
     return this;
   };
 
-  /**
-   * Handles HTTP request
-   */
-  public handler = async (
+  public createCtx = (
     req: http.IncomingMessage,
     res: http.ServerResponse
-  ) => {
+  ): ICtx => {
     // Parse query string and extract path
     const parsed = parseUrl(req);
     const query =
@@ -84,7 +81,7 @@ export class Routex extends Router {
         : parsed.query);
 
     /* istanbul ignore next */
-    const ctx: ICtx = {
+    return {
       data: {},
       params: {},
       path: (parsed && parsed.pathname) || "/",
@@ -97,10 +94,20 @@ export class Routex extends Router {
       workerId: this.workerId,
       providers: { ...this.providers }
     };
+  };
+
+  /**
+   * Handles HTTP request
+   */
+  public handler = async (
+    req: http.IncomingMessage,
+    res: http.ServerResponse
+  ) => {
+    const ctx = this.createCtx(req, res);
 
     await this.handle(ctx);
 
-    if (ctx.body) {
+    if (ctx.body && ![204, 304].includes(ctx.statusCode || 0)) {
       ctx.res.setHeader("Content-Length", ctx.body.contentLength);
       ctx.res.setHeader("Content-Type", ctx.body.contentType);
     }
@@ -110,10 +117,10 @@ export class Routex extends Router {
     }
 
     if (ctx.body) {
-      ctx.body.write(ctx.res);
+      ctx.res.end(ctx.body.toChunk());
+    } else {
+      ctx.res.end();
     }
-
-    ctx.res.end();
 
     return ctx;
   };

@@ -5,7 +5,8 @@ import {
   Router,
   ErrorWithBody,
   JsonBody,
-  TextBody
+  TextBody,
+  ICtx
 } from "../src";
 
 it("Handles 404", () => {
@@ -71,4 +72,18 @@ it("Handles error with body", () => {
     .get("/")
     .expect("Error")
     .expect(400);
+});
+
+it("Handles custom error handler", () => {
+  const app = new Routex({
+    errorHandler: (ctx: ICtx) => (ctx.body = new TextBody("Error!"))
+  });
+
+  app.get("/", () => {
+    throw new Error();
+  });
+
+  return request(app.handler)
+    .get("/")
+    .expect("Error!");
 });

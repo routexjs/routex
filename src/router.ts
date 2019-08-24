@@ -210,6 +210,7 @@ export class Router {
 
 // Attach method shortcuts such as router.get(...), etc
 Object.values(Methods).forEach(method => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
   Router.prototype[method] = function(
     path: string,
