@@ -1,3 +1,7 @@
+## 0.1.0-rc.3 - 2019-10-07
+
+- Upgrade dependencies
+
 ## 0.1.0-rc.2 - 2019-08-24
 
 - Fix large body not fully sending again
