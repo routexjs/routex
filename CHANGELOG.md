@@ -1,3 +1,7 @@
+## 1.0.0-rc.1 - 2019-12-07
+
+- Upgrade dependencies
+
 ## 0.1.0-rc.3 - 2019-10-07
 
 - Upgrade dependencies

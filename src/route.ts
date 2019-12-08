@@ -1,4 +1,4 @@
-import * as pathToRegexp from "path-to-regexp";
+import { pathToRegexp, Key } from "path-to-regexp";
 import { Methods } from "./methods";
 
 import { ICtx } from "./ctx";
@@ -14,7 +14,7 @@ export class Route {
   public path: string | undefined;
   public regex: RegExp | undefined;
   public handler: RouteHandler;
-  public keys: pathToRegexp.Key[] = [];
+  public keys: Key[] = [];
 
   public constructor(
     method: Methods | Methods[] | undefined,
