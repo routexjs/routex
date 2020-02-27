@@ -1,5 +1,5 @@
 import * as request from "supertest";
-import { Routex, useExpress, ICtx } from "../src";
+import { Routex, useExpress, ICtx, JsonBody, TextBody } from "../src";
 
 describe("Middlewares", () => {
   it("Handles middleware", () => {
@@ -83,6 +83,21 @@ describe("Middlewares", () => {
     return request(app.handler)
       .get("/")
       .expect("AB")
+      .expect(200);
+  });
+
+  it("Has params in middleware", () => {
+    const app = new Routex();
+
+    app
+      .middleware(ctx => {
+        ctx.data.name = ctx.params.name;
+      })
+      .get("/:name", ctx => new TextBody(ctx.data.name));
+
+    return request(app.handler)
+      .get("/test")
+      .expect("test")
       .expect(200);
   });
 });

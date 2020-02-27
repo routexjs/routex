@@ -1,7 +1,10 @@
+## 1.0.0-rc.4 - 2020-02-27
+
+- Fix bug with middleware applying before params parsing
+
 ## 1.0.0-rc.3 - 2020-02-27
 
 - Remove support for Node 8
-- Fix bug with middleware applying before params parsing
 
 ## 1.0.0-rc.2 - 2020-02-27
 

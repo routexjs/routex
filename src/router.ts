@@ -139,17 +139,9 @@ export class Router {
         return true;
       });
 
-      const middlewaresNext: (() => void | Promise<void>)[] = [];
-
-      for (const middleware of this.middlewares) {
-        const next = await middleware(ctx);
-
-        if (next) {
-          middlewaresNext.push(next);
-        }
-      }
-
       if (route && match) {
+        const middlewaresNext: (() => void | Promise<void>)[] = [];
+
         async function applyNextMiddlewares() {
           for (const middelwareNext of middlewaresNext) {
             await middelwareNext();
@@ -167,6 +159,15 @@ export class Router {
           }
 
           ctx.params = { ...ctx.params, ...params };
+
+          for (const middleware of this.middlewares) {
+            const next = await middleware(ctx);
+
+            if (next) {
+              middlewaresNext.push(next);
+            }
+          }
+
           const body = await route.handle(ctx);
 
           if (body) {
