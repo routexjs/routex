@@ -1,3 +1,7 @@
+## 1.0.0-rc.5 - 2020-02-27
+
+- Add `Routex.createCtx` and `Routex.runHandler` as testing helpers
+
 ## 1.0.0-rc.4 - 2020-02-27
 
 - Fix bug with middleware applying before params parsing

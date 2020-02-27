@@ -1,6 +1,6 @@
 import { ErrorWithStatusCode } from "./errors/status";
 import { ErrorHandler, RouteHandler } from "./handler";
-import { Handler, Middleware } from "./index";
+import { Handler, Middleware, Routex } from "./index";
 import { allMethods, Methods } from "./methods";
 import { IRouteOptions, Route } from "./route";
 import { decodeParam, toArray, toLowerCases } from "./utils";
@@ -168,11 +168,7 @@ export class Router {
             }
           }
 
-          const body = await route.handle(ctx);
-
-          if (body) {
-            ctx.body = body;
-          }
+          await Routex.runHandler(route.handle, ctx);
         } catch (error) {
           await applyNextMiddlewares();
           throw error;

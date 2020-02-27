@@ -6,9 +6,9 @@ import * as throng from "throng";
 import { v4 as uuid } from "uuid";
 
 import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
-import { ICtx, ICtxProviders } from "./ctx";
+import { ICreateCtx, ICtx, ICtxProviders } from "./ctx";
 import { defaultErrorHandler } from "./errors/defaultHandler";
-import { ErrorHandler } from "./handler";
+import { ErrorHandler, Handler } from "./handler";
 import { Methods } from "./methods";
 import { Router } from "./router";
 import { isString, toArray } from "./utils";
@@ -69,10 +69,13 @@ export class Routex extends Router {
     return this;
   };
 
-  public createCtx = (
+  /**
+   * Handles HTTP request
+   */
+  public handler = async (
     req: http.IncomingMessage,
     res: http.ServerResponse
-  ): ICtx => {
+  ) => {
     // Parse query string and extract path
     const parsed = parseUrl(req);
     const query =
@@ -81,35 +84,18 @@ export class Routex extends Router {
         ? qs.parse(parsed.query as string)
         : parsed.query);
 
-    /* istanbul ignore next */
-    // Default to GET for missing methods (should never happen)
-    const method = (req.method || Methods.GET).toLowerCase() as Methods;
-
-    /* istanbul ignore next */
-    return {
-      data: {},
-      params: {},
-      method,
+    const ctx = Routex.createCtx({
       path: (parsed && parsed.pathname) || "/",
-      query: query || {},
-      req,
+      query,
+      method: req.method,
       requestId: this.requestIdGenerator
         ? this.requestIdGenerator()
         : undefined,
-      res,
       workerId: this.workerId,
-      providers: { ...this.providers }
-    };
-  };
-
-  /**
-   * Handles HTTP request
-   */
-  public handler = async (
-    req: http.IncomingMessage,
-    res: http.ServerResponse
-  ) => {
-    const ctx = this.createCtx(req, res);
+      providers: this.providers,
+      req,
+      res
+    });
 
     await this.handle(ctx);
 
@@ -225,5 +211,46 @@ export class Routex extends Router {
         reducingServer,
       server
     );
+  }
+
+  /**
+   * Create a context object. Useful during testing
+   */
+  public static createCtx = ({
+    path,
+    query,
+    req,
+    res,
+    requestId,
+    workerId,
+    providers,
+    method
+  }: ICreateCtx): ICtx => {
+    /* istanbul ignore next */
+    return {
+      data: {},
+      params: {},
+      // Default to GET for missing methods (should never happen)
+      method: (method || Methods.GET).toLowerCase() as Methods,
+      path: path || "/",
+      query: query || {},
+      req,
+      requestId,
+      res,
+      workerId,
+      providers: { ...providers }
+    };
+  };
+
+  /**
+   * Run a handler, with associated "magic" logic
+   */
+  public static async runHandler(handler: Handler, ctx: ICtx) {
+    const body = await handler(ctx);
+    if (body) {
+      ctx.body = body;
+    }
+
+    return ctx;
   }
 }

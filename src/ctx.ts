@@ -1,3 +1,4 @@
+import * as http from "http";
 import { IncomingMessage, ServerResponse } from "http";
 import { IBody } from "./body";
 import { Methods } from "./methods";
@@ -24,4 +25,22 @@ export interface ICtxData {
 
 export interface ICtxProviders {
   [key: string]: any;
+}
+
+export interface ICreateCtx {
+  path?: string;
+  query?: any;
+  requestId?: string;
+  workerId?: number;
+  method?: string;
+  providers?: ICtxProviders;
+  // Sometimes cannot be mocked during testing.
+  // You can pass `{}` which should work in most cases, as internal code doesn't
+  // use res & req after the initial context creation.
+  //
+  // And for proper type checking:
+  //   req: {} as http.IncomingMessage,
+  //   res: {} as http.ServerResponse,
+  res: http.ServerResponse;
+  req: http.IncomingMessage;
 }
