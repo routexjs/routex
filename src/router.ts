@@ -88,16 +88,6 @@ export class Router {
 
   public handle: Handler = async ctx => {
     try {
-      const middlewaresNext: (() => void | Promise<void>)[] = [];
-
-      for (const middleware of this.middlewares) {
-        const next = await middleware(ctx);
-
-        if (next) {
-          middlewaresNext.push(next);
-        }
-      }
-
       if (!ctx.path || !ctx.path.startsWith("/")) {
         ctx.path = "/" + (ctx.path || "");
       }
@@ -149,6 +139,16 @@ export class Router {
         return true;
       });
 
+      const middlewaresNext: (() => void | Promise<void>)[] = [];
+
+      for (const middleware of this.middlewares) {
+        const next = await middleware(ctx);
+
+        if (next) {
+          middlewaresNext.push(next);
+        }
+      }
+
       if (route && match) {
         async function applyNextMiddlewares() {
           for (const middelwareNext of middlewaresNext) {
@@ -181,6 +181,7 @@ export class Router {
 
         return;
       }
+
       if (ctx.method === Methods.OPTIONS) {
         // Prevent duplicates methods, all upper-case
         const methods: string[] = [];
