@@ -129,7 +129,7 @@ export class Router {
           }
         }
 
-        const matchesMethod =
+        const noMatchingMethod =
           testRoute.method &&
           testRoute.method !== ctx.method &&
           !(
@@ -137,7 +137,7 @@ export class Router {
             testRoute.method.includes(ctx.method)
           );
 
-        if (matchesMethod) {
+        if (noMatchingMethod) {
           return false;
         }
 
@@ -167,11 +167,16 @@ export class Router {
           }
 
           ctx.params = { ...ctx.params, ...params };
-          await route.handle(ctx);
+          const body = await route.handle(ctx);
+
+          if (body) {
+            ctx.body = body;
+          }
         } catch (error) {
           await applyNextMiddlewares();
           throw error;
         }
+
         await applyNextMiddlewares();
 
         return;
