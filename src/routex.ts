@@ -246,9 +246,14 @@ export class Routex extends Router {
    * Run a handler, with associated "magic" logic
    */
   public static async runHandler(handler: Handler, ctx: ICtx) {
-    const body = await handler(ctx);
-    if (body) {
-      ctx.body = body;
+    try {
+      const body = await handler(ctx);
+
+      if (body) {
+        ctx.body = body;
+      }
+    } catch (error) {
+      ctx.error = error;
     }
 
     return ctx;

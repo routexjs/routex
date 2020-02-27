@@ -169,6 +169,10 @@ export class Router {
           }
 
           await Routex.runHandler(route.handle, ctx);
+
+          if (ctx.error) {
+            throw ctx.error;
+          }
         } catch (error) {
           await applyNextMiddlewares();
           throw error;

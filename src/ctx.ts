@@ -17,6 +17,7 @@ export interface ICtx {
   statusCode?: number;
   readonly workerId?: number;
   readonly requestId?: string;
+  error?: Error;
 }
 
 export interface ICtxData {

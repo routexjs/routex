@@ -1,3 +1,8 @@
+## 1.0.0-rc.6 - 2020-02-27
+
+- Add `error` to context
+  - Add catching in `Routex.runHandler`
+
 ## 1.0.0-rc.5 - 2020-02-27
 
 - Add `Routex.createCtx` and `Routex.runHandler` as testing helpers
