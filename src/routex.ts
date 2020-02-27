@@ -3,7 +3,7 @@ import * as https from "https";
 import * as parseUrl from "parseurl";
 import * as qs from "qs";
 import * as throng from "throng";
-import * as uuid from "uuid";
+import { v4 as uuid } from "uuid";
 
 import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
 import { ICtx, ICtxProviders } from "./ctx";
@@ -181,8 +181,8 @@ export class Routex extends Router {
     const close = () =>
       new Promise((resolve, reject) => {
         server.close(error => {
+          /* istanbul ignore next */
           if (error) {
-            /* istanbul ignore next */
             reject(error);
           }
           resolve();

@@ -1,13 +1,17 @@
-import { ErrorWithStatusCode, Router } from ".";
+import { ErrorWithStatusCode, IBody, Router } from ".";
 import { ICtx } from "./ctx";
 
-export type Handler = (ctx: ICtx) => Promise<void> | void;
+type PromiseOr<T> = Promise<T> | T;
 
-export type Middleware = (ctx: ICtx) => (() => void) | Promise<void> | void;
+export type Handler = (ctx: ICtx) => PromiseOr<void> | PromiseOr<IBody>;
+
+export type Middleware = (
+  ctx: ICtx
+) => (() => void) | PromiseOr<void> | PromiseOr<any>;
 
 export type ErrorHandler =
   | Handler
-  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => Promise<any> | any);
+  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => PromiseOr<any>);
 
 type RouteHandler_ = Router | Handler;
 

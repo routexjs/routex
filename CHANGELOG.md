@@ -1,3 +1,9 @@
+## 1.0.0-rc.2 - 2020-02-27
+
+- Upgrade dependencies
+- Added body return in handler
+- Added/refactored some tests
+
 ## 1.0.0-rc.1 - 2019-12-07
 
 - Upgrade dependencies
