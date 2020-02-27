@@ -1,3 +1,7 @@
+## 1.0.0-rc.3 - unreleased
+
+- Remove support for Node 8
+
 ## 1.0.0-rc.2 - 2020-02-27
 
 - Upgrade dependencies
