@@ -115,7 +115,7 @@ export class Routex extends Router {
       ctx.res.writeHead(ctx.statusCode);
     }
 
-    if (ctx.body && ctx.method !== Methods.HEAD) {
+    if (chunk && ctx.body && ctx.method !== Methods.HEAD) {
       ctx.res.end(chunk);
     } else {
       ctx.res.end();

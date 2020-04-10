@@ -1,5 +1,6 @@
-## Unreleased
+## 1.0.0-rc.9 - 2020-04-10
 
+- Fix empty chunk
 - Clean development environment
   - Remove typings for Superagent
   - Update ESLint config
