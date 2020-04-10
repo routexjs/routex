@@ -6,7 +6,7 @@ import {
   Middleware,
   Router,
   Routex,
-  TextBody
+  TextBody,
 } from "../src";
 
 describe("Routex", () => {
@@ -14,28 +14,28 @@ describe("Routex", () => {
     const app = new Routex();
 
     app
-      .get("/", ctx => {
+      .get("/", (ctx) => {
         ctx.body = new JsonBody({ name: "bonnie" });
       })
-      .post("/", ctx => {
+      .post("/", (ctx) => {
         ctx.body = new JsonBody({ name: "john" });
       })
-      .delete("/", ctx => {
+      .delete("/", (ctx) => {
         ctx.body = new JsonBody({ name: "johnny" });
       })
-      .patch("/", ctx => {
+      .patch("/", (ctx) => {
         ctx.body = new JsonBody({ name: "hayley" });
       })
-      .put("/", ctx => {
+      .put("/", (ctx) => {
         ctx.body = new JsonBody({ name: "charles" });
       })
-      .route(Methods.GET, "/sub", ctx => {
+      .route(Methods.GET, "/sub", (ctx) => {
         ctx.body = new JsonBody({ name: "joey" });
       })
-      .route([Methods.POST], "/sub", ctx => {
+      .route([Methods.POST], "/sub", (ctx) => {
         ctx.body = new JsonBody({ name: "matthew" });
       })
-      .any("/any", ctx => {
+      .any("/any", (ctx) => {
         ctx.body = new JsonBody({ name: "tim" });
       });
 
@@ -81,30 +81,28 @@ describe("Routex", () => {
         .get("/any")
         .expect("Content-Type", /json/)
         .expect("Content-Length", "14")
-        .expect(200)
+        .expect(200),
     ]);
   });
 
   it("Handles 404", () => {
     const app = new Routex();
 
-    return request(app.handler)
-      .post("/")
-      .expect(404);
+    return request(app.handler).post("/").expect(404);
   });
 
   it("Handles array handlers", () => {
     const app = new Routex();
 
     app.get("/", [
-      ctx => {
+      (ctx) => {
         // @ts-ignore
         ctx.data.name = "john";
       },
-      ctx => {
+      (ctx) => {
         // @ts-ignore
         ctx.body = new JsonBody({ name: ctx.data.name });
-      }
+      },
     ]);
 
     return request(app.handler)
@@ -118,13 +116,13 @@ describe("Routex", () => {
     const app = new Routex();
 
     app
-      .get("/women", ctx => {
+      .get("/women", (ctx) => {
         ctx.body = new JsonBody({ name: "bonnie" });
       })
-      .get("/man", ctx => {
+      .get("/man", (ctx) => {
         ctx.body = new JsonBody({ name: "john" });
       })
-      .get("/", ctx => {
+      .get("/", (ctx) => {
         ctx.statusCode = 404;
         ctx.body = new JsonBody({ name: null });
       });
@@ -146,18 +144,18 @@ describe("Routex", () => {
         .get("/")
         .expect("Content-Type", /json/)
         .expect("Content-Length", "13")
-        .expect(404)
+        .expect(404),
     ]);
   });
 
   it("Handles sub-routers", () => {
     const app = new Routex();
 
-    app.child("/child").get("/", ctx => {
+    app.child("/child").get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "joey" });
     });
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.statusCode = 404;
       ctx.body = new JsonBody({ name: null });
     });
@@ -174,7 +172,7 @@ describe("Routex", () => {
         .get("/")
         .expect("Content-Type", /json/)
         .expect("Content-Length", "13")
-        .expect(404)
+        .expect(404),
     ]);
   });
 
@@ -189,7 +187,7 @@ describe("Routex", () => {
     app.child("/ab", [null, [write("A"), write("B")]]).get("/", () => {});
 
     const c = new Router();
-    c.get("/", ctx => {
+    c.get("/", (ctx) => {
       ctx.res.write("C");
     });
 
@@ -198,18 +196,9 @@ describe("Routex", () => {
     const handler = request(app.handler);
 
     return Promise.all([
-      handler
-        .get("/a")
-        .expect(200)
-        .expect("A"),
-      handler
-        .get("/ab")
-        .expect(200)
-        .expect("AB"),
-      handler
-        .get("/abc")
-        .expect(200)
-        .expect("ABC")
+      handler.get("/a").expect(200).expect("A"),
+      handler.get("/ab").expect(200).expect("AB"),
+      handler.get("/abc").expect(200).expect("ABC"),
     ]);
   });
 
@@ -219,7 +208,7 @@ describe("Routex", () => {
     app
       .child("/")
       .child("/test")
-      .get("/child", ctx => {
+      .get("/child", (ctx) => {
         ctx.body = new JsonBody({ name: "joey" });
       });
 
@@ -234,10 +223,10 @@ describe("Routex", () => {
     const app = new Routex();
 
     app
-      .get("/letter/:letter?", ctx => {
+      .get("/letter/:letter?", (ctx) => {
         ctx.body = new TextBody(ctx.params.letter || "");
       })
-      .get("/:name", ctx => {
+      .get("/:name", (ctx) => {
         ctx.body = new JsonBody({ name: ctx.params.name });
       });
 
@@ -254,31 +243,25 @@ describe("Routex", () => {
         .expect("Content-Type", /json/)
         .expect("Content-Length", "21")
         .expect(200),
-      handler
-        .get("/letter/a")
-        .expect("a")
-        .expect(200),
-      handler
-        .get("/letter")
-        .expect("")
-        .expect(200),
-      handler.get("/letter/%^").expect(500)
+      handler.get("/letter/a").expect("a").expect(200),
+      handler.get("/letter").expect("").expect(200),
+      handler.get("/letter/%^").expect(500),
     ]);
   });
 
   it("Has request ID", () => {
     const appUuid = new Routex();
-    appUuid.get("/", ctx => {
+    appUuid.get("/", (ctx) => {
       ctx.body = new TextBody(ctx.requestId!);
     });
 
     const appFixed = new Routex({ requestId: () => "FIXED" });
-    appFixed.get("/", ctx => {
+    appFixed.get("/", (ctx) => {
       ctx.body = new TextBody(ctx.requestId!);
     });
 
     const appNone = new Routex({ requestId: false });
-    appNone.get("/", ctx => {
+    appNone.get("/", (ctx) => {
       ctx.body = new TextBody(ctx.requestId === undefined ? "YES" : "NO");
     });
 
@@ -286,12 +269,8 @@ describe("Routex", () => {
       request(appUuid.handler)
         .get("/")
         .expect(({ text }) => expect(text.length).toBe(36)),
-      request(appFixed.handler)
-        .get("/")
-        .expect("FIXED"),
-      request(appNone.handler)
-        .get("/")
-        .expect("YES")
+      request(appFixed.handler).get("/").expect("FIXED"),
+      request(appNone.handler).get("/").expect("YES"),
     ]);
   });
 });

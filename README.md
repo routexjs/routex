@@ -30,7 +30,7 @@ const { Routex, TextBody } = require("routex");
 const port = process.env.PORT || 3000;
 const app = new Routex();
 
-app.get("/", ctx => {
+app.get("/", (ctx) => {
   ctx.body = new TextBody("Hello world!");
 });
 

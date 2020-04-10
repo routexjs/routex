@@ -4,13 +4,13 @@ import { Routex, TextBody } from "../src";
 describe("OPTIONS", () => {
   it("Handles OPTIONS", () => {
     const app = new Routex();
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new TextBody("");
     });
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new TextBody("");
     });
-    app.post("/", ctx => {
+    app.post("/", (ctx) => {
       ctx.body = new TextBody("");
     });
 

@@ -40,7 +40,7 @@ export class Routex extends Router {
   public constructor({
     requestId,
     errorHandler,
-    providers
+    providers,
   }: IRoutexOptions = {}) {
     super();
     if (requestId !== false) {
@@ -60,7 +60,7 @@ export class Routex extends Router {
   public appMiddleware = (appMiddleware: AppMiddleware | AppMiddleware[]) => {
     if (appMiddleware) {
       this.appMiddlewares.push(
-        ...toArray(appMiddleware).map(appMiddlewareOne =>
+        ...toArray(appMiddleware).map((appMiddlewareOne) =>
           appMiddlewareOne(this)
         )
       );
@@ -94,7 +94,7 @@ export class Routex extends Router {
       workerId: this.workerId,
       providers: this.providers,
       req,
-      res
+      res,
     });
 
     await this.handle(ctx);
@@ -132,7 +132,7 @@ export class Routex extends Router {
     {
       hostname,
       server: optionsServer,
-      https: httpsOptions
+      https: httpsOptions,
     }: IListenOptions = {}
   ) {
     if (port) {
@@ -160,13 +160,13 @@ export class Routex extends Router {
           : http.createServer(this.handler))
     );
 
-    await new Promise(resolve => {
+    await new Promise((resolve) => {
       server.listen({ port: port as number, host: hostname }, resolve);
     });
 
     const close = () =>
       new Promise((resolve, reject) => {
-        server.close(error => {
+        server.close((error) => {
           /* istanbul ignore next */
           if (error) {
             reject(error);
@@ -182,7 +182,7 @@ export class Routex extends Router {
       port:
         /* istanbul ignore next */
         address && !isString(address) ? address.port : null,
-      server
+      server,
     };
   }
 
@@ -192,11 +192,11 @@ export class Routex extends Router {
     { workers, ...options }: IClusterOptions = {}
   ) {
     throng({
-      start: id => {
+      start: (id) => {
         this.workerId = id;
         this.listen(port, options);
       },
-      workers
+      workers,
     });
   }
 
@@ -224,7 +224,7 @@ export class Routex extends Router {
     requestId,
     workerId,
     providers,
-    method
+    method,
   }: ICreateCtx): ICtx => {
     /* istanbul ignore next */
     return {
@@ -238,7 +238,7 @@ export class Routex extends Router {
       requestId,
       res,
       workerId,
-      providers: { ...providers }
+      providers: { ...providers },
     };
   };
 

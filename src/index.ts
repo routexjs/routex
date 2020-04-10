@@ -11,7 +11,7 @@ export {
   IClusterOptions,
   IListenOptions,
   IRoutexOptions,
-  Routex
+  Routex,
 } from "./routex";
 export { AppMiddleware, IAppMiddleware } from "./appMiddleware";
 export { ICtx, ICtxProviders, ICtxData, ICreateCtx } from "./ctx";

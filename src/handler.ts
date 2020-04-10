@@ -5,9 +5,9 @@ type PromiseOr<T> = Promise<T> | T;
 
 export type Handler = (ctx: ICtx) => PromiseOr<void | IBody>;
 
-export type MiddlewareNext = () => PromiseOr<void>;
+export type MiddlewareNext = () => PromiseOr<void | any>;
 
-export type Middleware = (ctx: ICtx) => PromiseOr<void | MiddlewareNext>;
+export type Middleware = (ctx: ICtx) => PromiseOr<void | MiddlewareNext | any>;
 
 export type ErrorHandler =
   | Handler

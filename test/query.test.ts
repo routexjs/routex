@@ -5,7 +5,7 @@ describe("Query string", () => {
   it("Handles query string", () => {
     const app = new Routex();
 
-    app.get("/test", ctx => {
+    app.get("/test", (ctx) => {
       ctx.body = new TextBody(ctx.query.name);
     });
 

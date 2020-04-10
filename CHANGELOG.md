@@ -1,3 +1,12 @@
+## 1.0.0-rc.8 - 2020-04-10
+
+- Upgrade dependencies
+- Fix small typing bug with previous update of middleware type
+
+## 1.0.0-rc.7 - 2020-04-09
+
+- Update handler/middleware types, add `MiddlewareNext`
+
 ## 1.0.0-rc.6 - 2020-02-27
 
 - Add `error` to context

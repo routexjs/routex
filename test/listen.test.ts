@@ -6,7 +6,7 @@ describe("Listen", () => {
   it("Handles listen on random port", async () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" });
     });
 
@@ -24,7 +24,7 @@ describe("Listen", () => {
   it("Handles listen on assigned port", async () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" });
     });
 
@@ -42,7 +42,7 @@ describe("Listen", () => {
   it("Handles listen on assigned string port", async () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" });
     });
 
@@ -60,7 +60,7 @@ describe("Listen", () => {
   it("Catches listen on invalid port", async () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" });
     });
 
@@ -70,7 +70,7 @@ describe("Listen", () => {
   it("Catches listen on invalid hostname", async () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" });
     });
 
@@ -130,7 +130,7 @@ describe("Listen", () => {
 
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new TextBody("john");
     });
 
@@ -139,8 +139,8 @@ describe("Listen", () => {
         ca,
         cert,
         key,
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
 
     await request(`https://localhost:${port}`)

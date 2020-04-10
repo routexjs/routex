@@ -5,16 +5,14 @@ import {
   Router,
   ErrorWithBody,
   TextBody,
-  ICtx
+  ICtx,
 } from "../src";
 
 describe("Errors", () => {
   it("Handles 404", () => {
     const app = new Routex();
 
-    return request(app.handler)
-      .post("/")
-      .expect(404);
+    return request(app.handler).post("/").expect(404);
   });
 
   it("Handles sub-routers error propagation", () => {
@@ -31,7 +29,7 @@ describe("Errors", () => {
 
     return Promise.all([
       appRequest.get("/1").expect(404),
-      appRequest.get("/2").expect(200)
+      appRequest.get("/2").expect(200),
     ]);
   });
 
@@ -42,10 +40,7 @@ describe("Errors", () => {
       throw new Error("Error");
     });
 
-    return request(app.handler)
-      .get("/")
-      .expect("Error")
-      .expect(500);
+    return request(app.handler).get("/").expect("Error").expect(500);
   });
 
   it("Handles error with status", () => {
@@ -55,10 +50,7 @@ describe("Errors", () => {
       throw new ErrorWithStatusCode(400, "Error");
     });
 
-    return request(app.handler)
-      .get("/")
-      .expect("Error")
-      .expect(400);
+    return request(app.handler).get("/").expect("Error").expect(400);
   });
 
   it("Handles error with body", () => {
@@ -68,23 +60,18 @@ describe("Errors", () => {
       throw new ErrorWithBody(400, new TextBody("Error"));
     });
 
-    return request(app.handler)
-      .get("/")
-      .expect("Error")
-      .expect(400);
+    return request(app.handler).get("/").expect("Error").expect(400);
   });
 
   it("Handles custom error handler", () => {
     const app = new Routex({
-      errorHandler: (ctx: ICtx) => (ctx.body = new TextBody("Error!"))
+      errorHandler: (ctx: ICtx) => (ctx.body = new TextBody("Error!")),
     });
 
     app.get("/", () => {
       throw new Error();
     });
 
-    return request(app.handler)
-      .get("/")
-      .expect("Error!");
+    return request(app.handler).get("/").expect("Error!");
   });
 });

@@ -11,7 +11,7 @@ describe("App Middlewares", () => {
       return {
         initializeServer() {
           calledInitializeServer = true;
-        }
+        },
       };
     };
 
@@ -36,9 +36,6 @@ describe("App Middlewares", () => {
       ctx.res.write("A");
     });
 
-    return request(app.handler)
-      .get("/")
-      .expect("A")
-      .expect(200);
+    return request(app.handler).get("/").expect("A").expect(200);
   });
 });

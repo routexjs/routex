@@ -6,21 +6,18 @@ describe("Middlewares", () => {
     const app = new Routex();
 
     app
-      .middleware(ctx => {
+      .middleware((ctx) => {
         ctx.res.write("A");
 
         return () => {
           ctx.res.write("C");
         };
       })
-      .get("/", ctx => {
+      .get("/", (ctx) => {
         ctx.res.write("B");
       });
 
-    return request(app.handler)
-      .get("/")
-      .expect("ABC")
-      .expect(200);
+    return request(app.handler).get("/").expect("ABC").expect(200);
   });
 
   it("Handles multiple middlewares", () => {
@@ -28,21 +25,18 @@ describe("Middlewares", () => {
 
     app
       .middleware([
-        ctx => {
+        (ctx) => {
           ctx.res.write("A");
         },
-        ctx => {
+        (ctx) => {
           ctx.res.write("B");
-        }
+        },
       ])
-      .get("/", ctx => {
+      .get("/", (ctx) => {
         ctx.res.write("C");
       });
 
-    return request(app.handler)
-      .get("/")
-      .expect("ABC")
-      .expect(200);
+    return request(app.handler).get("/").expect("ABC").expect(200);
   });
 
   it("Handles missing middleware", () => {
@@ -56,10 +50,7 @@ describe("Middlewares", () => {
         ctx.res.write("A");
       });
 
-    return request(app.handler)
-      .get("/")
-      .expect("A")
-      .expect(200);
+    return request(app.handler).get("/").expect("A").expect(200);
   });
 
   it("Handles express middleware", () => {
@@ -80,24 +71,18 @@ describe("Middlewares", () => {
         })
       );
 
-    return request(app.handler)
-      .get("/")
-      .expect("AB")
-      .expect(200);
+    return request(app.handler).get("/").expect("AB").expect(200);
   });
 
   it("Has params in middleware", () => {
     const app = new Routex();
 
     app
-      .middleware(ctx => {
+      .middleware((ctx) => {
         ctx.data.name = ctx.params.name;
       })
-      .get("/:name", ctx => new TextBody(ctx.data.name));
+      .get("/:name", (ctx) => new TextBody(ctx.data.name));
 
-    return request(app.handler)
-      .get("/test")
-      .expect("test")
-      .expect(200);
+    return request(app.handler).get("/test").expect("test").expect(200);
   });
 });

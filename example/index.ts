@@ -4,7 +4,7 @@ import {
   JsonBody,
   Routex,
   TextBody,
-  useExpress
+  useExpress,
 } from "../src";
 
 class ValidationError extends ErrorWithStatusCode {
@@ -28,7 +28,7 @@ app
     },
     (ctx: ICtx) => {
       ctx.body = new TextBody("Will never be returned");
-    }
+    },
   ])
   .get(
     "/express",
@@ -37,7 +37,7 @@ app
     })
   )
   .get("/delay", async (ctx: ICtx) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     ctx.body = new TextBody("Delayed");
   })
   .get(

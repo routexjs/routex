@@ -5,7 +5,7 @@ describe("Body", () => {
   it("Handles JSON pretty print", () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" }, { pretty: true });
     });
 
@@ -19,7 +19,7 @@ describe("Body", () => {
   it("Handles custom JSON pretty print", () => {
     const app = new Routex();
 
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new JsonBody({ name: "john" }, { pretty: "\t" });
     });
 
@@ -32,7 +32,7 @@ describe("Body", () => {
 
   it("Handles string body", () => {
     const app = new Routex();
-    app.get("/", ctx => {
+    app.get("/", (ctx) => {
       ctx.body = new TextBody("hello");
     });
 

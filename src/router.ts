@@ -86,7 +86,7 @@ export class Router {
     return this;
   };
 
-  public handle: Handler = async ctx => {
+  public handle: Handler = async (ctx) => {
     try {
       if (!ctx.path || !ctx.path.startsWith("/")) {
         ctx.path = "/" + (ctx.path || "");
@@ -100,7 +100,7 @@ export class Router {
 
       const optionsAllowedMethods: Methods[] = [];
 
-      this.routes.some(testRoute => {
+      this.routes.some((testRoute) => {
         if (testRoute.regex) {
           match = testRoute.regex.exec(url);
           if (!match) {
@@ -186,7 +186,7 @@ export class Router {
       if (ctx.method === Methods.OPTIONS) {
         // Prevent duplicates methods, all upper-case
         const methods: string[] = [];
-        optionsAllowedMethods.forEach(optionsMethod => {
+        optionsAllowedMethods.forEach((optionsMethod) => {
           if (methods.includes(optionsMethod.toUpperCase())) {
             return;
           }
@@ -210,10 +210,10 @@ export class Router {
 }
 
 // Attach method shortcuts such as router.get(...), etc
-Object.values(Methods).forEach(method => {
+Object.values(Methods).forEach((method) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
   // @ts-ignore
-  Router.prototype[method] = function(
+  Router.prototype[method] = function (
     path: string,
     handler: RouteHandler,
     options?: IRouteOptions

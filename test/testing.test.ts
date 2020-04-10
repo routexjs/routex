@@ -9,7 +9,7 @@ describe("Testing", () => {
 
     const ctx = Routex.createCtx({
       req: {} as http.IncomingMessage,
-      res: {} as http.ServerResponse
+      res: {} as http.ServerResponse,
     });
 
     await Routex.runHandler(handler, ctx);
@@ -24,7 +24,7 @@ describe("Testing", () => {
 
     const ctx = Routex.createCtx({
       req: {} as http.IncomingMessage,
-      res: {} as http.ServerResponse
+      res: {} as http.ServerResponse,
     });
 
     await Routex.runHandler(handler, ctx);
