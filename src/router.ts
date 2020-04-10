@@ -1,5 +1,5 @@
 import { ErrorWithStatusCode } from "./errors/status";
-import { ErrorHandler, RouteHandler } from "./handler";
+import { ErrorHandler, MiddlewareNext, RouteHandler } from "./handler";
 import { Handler, Middleware, Routex } from "./index";
 import { allMethods, Methods } from "./methods";
 import { IRouteOptions, Route } from "./route";
@@ -140,7 +140,7 @@ export class Router {
       });
 
       if (route && match) {
-        const middlewaresNext: (() => void | Promise<void>)[] = [];
+        const middlewaresNext: MiddlewareNext[] = [];
 
         async function applyNextMiddlewares() {
           for (const middelwareNext of middlewaresNext) {
@@ -163,7 +163,7 @@ export class Router {
           for (const middleware of this.middlewares) {
             const next = await middleware(ctx);
 
-            if (next) {
+            if (next && typeof next === "function") {
               middlewaresNext.push(next);
             }
           }
