@@ -3,15 +3,15 @@ import { ICtx } from "./ctx";
 
 type PromiseOr<T> = Promise<T> | T;
 
-export type Handler = (ctx: ICtx) => PromiseOr<void> | PromiseOr<IBody>;
+export type Handler = (ctx: ICtx) => PromiseOr<void | IBody>;
 
-export type Middleware = (
-  ctx: ICtx
-) => (() => void) | PromiseOr<void> | PromiseOr<any>;
+export type Middleware =
+  | Handler
+  | ((ctx: ICtx) => (() => PromiseOr<void>) | PromiseOr<void>);
 
 export type ErrorHandler =
   | Handler
-  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => PromiseOr<any>);
+  | ((ctx: ICtx, error: Error | ErrorWithStatusCode) => PromiseOr<void>);
 
 type RouteHandler_ = Router | Handler;
 

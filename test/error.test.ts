@@ -24,7 +24,7 @@ describe("Errors", () => {
     app.child("/1");
 
     const child2 = new Router();
-    child2.errorHandler = () => null;
+    child2.errorHandler = () => undefined;
     app.child("/2", child2);
 
     const appRequest = request(app.handler);
