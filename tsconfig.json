@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es2015",
-    "module": "commonjs",
-    "lib": ["es2015", "es2016", "es2017", "es2018"],
+    "moduleResolution": "Node",
+    "target": "ES2015",
+    "module": "CommonJS",
+    "lib": ["ES2019"],
     "strict": true,
     "sourceMap": true,
     "declaration": true,
     "allowSyntheticDefaultImports": true,
     "declarationDir": "dist/types",
-    "outDir": "dist/lib",
-    "typeRoots": ["node_modules/@types", "src/types"]
+    "outDir": "dist/lib"
   },
   "include": ["src"]
 }

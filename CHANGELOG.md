@@ -1,3 +1,7 @@
+## Unreleased
+
+- Clean development typings for Superagent
+
 ## 1.0.0-rc.8 - 2020-04-10
 
 - Upgrade dependencies
