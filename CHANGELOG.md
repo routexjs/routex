@@ -1,3 +1,7 @@
+## Unreleased
+
+- Require Node 10
+
 ## 1.0.0-rc.9 - 2020-04-10
 
 - Fix empty chunk
