@@ -1,6 +1,8 @@
 ## Unreleased
 
-- Clean development typings for Superagent
+- Clean development environment
+  - Remove typings for Superagent
+  - Update ESLint config
 
 ## 1.0.0-rc.8 - 2020-04-10
 
