@@ -1,6 +1,8 @@
-## Unreleased
+## 1.0.0 - 2020-04-12
 
+- Graduate to v1.0.0
 - Require Node 10
+- Export `IRouteOptions`
 
 ## 1.0.0-rc.9 - 2020-04-10
 

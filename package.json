@@ -1,6 +1,6 @@
 {
   "name": "routex",
-  "version": "1.0.0-rc.9",
+  "version": "1.0.0",
   "description": "Modern Node router",
   "keywords": [
     "router",
@@ -13,11 +13,11 @@
   },
   "license": "MIT",
   "author": "Charles Crete <charles@cretezy.com>",
+  "main": "dist/lib/index.js",
+  "typings": "dist/types/index.d.ts",
   "files": [
     "dist"
   ],
-  "main": "dist/lib/index.js",
-  "typings": "dist/types/index.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "tsc",
