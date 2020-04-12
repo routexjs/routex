@@ -1,5 +1,6 @@
 <div align="center"> 
-  <img width="200px" src="https://routex.js.org/img/icon.svg" />
+  <br />
+  <img width="150px" src="https://routex.js.org/img/icon.svg" />
   <p><strong>Routex</strong>: Modern Node router</p>
   <p><a href="https://www.npmjs.com/package/routex"><img src="https://img.shields.io/npm/v/routex.svg" alt="npm"></a> <a href="https://travis-ci.com/routexjs/routex"><img src="https://img.shields.io/travis/com/routexjs/routex.svg" alt="Travis CI"></a> <a href="https://codecov.io/gh/routexjs/routex"><img src="https://img.shields.io/codecov/c/github/routexjs/routex.svg" alt="Codecov"></a></p>
 </div>
