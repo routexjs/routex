@@ -219,6 +219,25 @@ describe("Routex", () => {
       .expect(200);
   });
 
+  it("Handles sub-routers with matching paths", () => {
+    const app = new Routex();
+
+    app.child("/test/test").get("/b", (ctx) => {
+      ctx.body = new TextBody("B");
+    });
+
+    app.child("/test").get("/a", (ctx) => {
+      ctx.body = new TextBody("A");
+    });
+
+    const handler = request(app.handler);
+
+    return Promise.all([
+      handler.get("/test/a").expect(200).expect("A"),
+      handler.get("/test/test/b").expect(200).expect("B"),
+    ]);
+  });
+
   it("Handles params", () => {
     const app = new Routex();
 
