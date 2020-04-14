@@ -2,7 +2,9 @@
 
 ## Supported Versions
 
-While we are in alpha (< v0.1.0), only the last version is current supported.
+The latest version is supported, as is the last minor version and the last major version.
+
+For example, if they are v1.0.0, v1.0.1, v2.0.0, v2.1.0, v2.2.0, the supported versions are: v1.0.1, v2.1.0, v2.2.0.
 
 ## Reporting a Vulnerability
 
