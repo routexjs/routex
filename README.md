@@ -6,8 +6,6 @@
   <p><a href="https://routex.js.org">Documentation</a> - <a href="https://github.com/routexjs/routex">GitHub</a></p>
 </div>
 
-
-
 ### Features
 
 - Easy to use, good performance

@@ -1,3 +1,7 @@
+## 1.0.1 - Unreleased
+
+- Upgrade dev dependencies
+
 ## 1.0.0 - 2020-04-12
 
 - Graduate to v1.0.0
