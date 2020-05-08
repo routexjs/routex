@@ -1,5 +1,7 @@
-## 1.0.1 - Unreleased
+## 1.0.1 - 2020-05-08
 
+- Change `ctx.req` from `http.IncomingMessage` to `ICtxRequest` (which extends `IncomingMessage`)
+  - This fixes many problems with types for `@routex/body-parser`
 - Upgrade dev dependencies
 
 ## 1.0.0 - 2020-04-12

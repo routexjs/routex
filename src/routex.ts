@@ -6,7 +6,7 @@ import * as throng from "throng";
 import { v4 as uuid } from "uuid";
 
 import { AppMiddleware, IAppMiddleware } from "./appMiddleware";
-import { ICreateCtx, ICtx, ICtxProviders } from "./ctx";
+import { ICreateCtx, ICtx, ICtxProviders, ICtxRequest } from "./ctx";
 import { defaultErrorHandler } from "./errors/defaultHandler";
 import { ErrorHandler, Handler } from "./handler";
 import { Methods } from "./methods";
@@ -93,7 +93,7 @@ export class Routex extends Router {
         : undefined,
       workerId: this.workerId,
       providers: this.providers,
-      req,
+      req: req as ICtxRequest,
       res,
     });
 

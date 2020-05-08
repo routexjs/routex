@@ -1,5 +1,5 @@
 import * as http from "http";
-import { ICtx, Routex, TextBody } from "../src";
+import { ICtx, ICtxRequest, Routex, TextBody } from "../src";
 
 describe("Testing", () => {
   test("createCtx & runHandler", async () => {
@@ -8,7 +8,7 @@ describe("Testing", () => {
     const handler = (ctx: ICtx) => body;
 
     const ctx = Routex.createCtx({
-      req: {} as http.IncomingMessage,
+      req: {} as ICtxRequest,
       res: {} as http.ServerResponse,
     });
 
@@ -23,7 +23,7 @@ describe("Testing", () => {
     };
 
     const ctx = Routex.createCtx({
-      req: {} as http.IncomingMessage,
+      req: {} as ICtxRequest,
       res: {} as http.ServerResponse,
     });
 

@@ -14,6 +14,6 @@ export {
   Routex,
 } from "./routex";
 export { AppMiddleware, IAppMiddleware } from "./appMiddleware";
-export { ICtx, ICtxProviders, ICtxData, ICreateCtx } from "./ctx";
+export { ICtx, ICtxProviders, ICtxData, ICreateCtx, ICtxRequest } from "./ctx";
 export { ErrorHandler, Handler, Middleware } from "./handler";
 export { IRouteOptions } from "./route";

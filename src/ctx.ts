@@ -3,9 +3,14 @@ import { IncomingMessage, ServerResponse } from "http";
 import { IBody } from "./body";
 import { Methods } from "./methods";
 
+export interface ICtxRequest extends IncomingMessage {
+  // Used for @routex/body-parser. Easier to set here to avoid conflicts
+  body: any;
+}
+
 export interface ICtx {
   params: { [key: string]: string };
-  readonly req: IncomingMessage;
+  readonly req: ICtxRequest;
   readonly res: ServerResponse;
   matches?: RegExpExecArray[];
   path: string;
@@ -40,8 +45,8 @@ export interface ICreateCtx {
   // use res & req after the initial context creation.
   //
   // And for proper type checking:
-  //   req: {} as http.IncomingMessage,
+  //   req: {} as ICtxRequest,
   //   res: {} as http.ServerResponse,
   res: http.ServerResponse;
-  req: http.IncomingMessage;
+  req: ICtxRequest;
 }
